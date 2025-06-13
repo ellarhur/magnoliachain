@@ -9,6 +9,7 @@ export const server = new networkServer({ blockchain: blockChain });
 const DEFAULT_PORT = 3000;
 const ROOT_NODE = `http://localhost:${DEFAULT_PORT}`;
 let NODE_PORT;
+const activeNodes = new Set();
 
 app.use('/api/blocks/', blockchainRoutes);
 
@@ -21,16 +22,25 @@ const synchronize = async () => {
   }
 };
 
+const displayActiveNodes = () => {
+  console.log('\nLista på aktiva noder:');
+  activeNodes.forEach(node => {
+    console.log(`Node på http://localhost:${node}`);
+  });
+};
+
 if (process.env.GENERATE_NODE_PORT === 'true') {
   NODE_PORT = DEFAULT_PORT + Math.ceil(Math.random() * 1000);
 }
 
 const PORT = NODE_PORT || DEFAULT_PORT;
+activeNodes.add(PORT);
 
 app.listen(PORT, () => {
   console.log(
     `Servern är startad på adress ${PORT} och kör i läget ${process.env.NODE_ENV}`
   );
+  displayActiveNodes();
 
   if (PORT !== DEFAULT_PORT) {
     synchronize();
