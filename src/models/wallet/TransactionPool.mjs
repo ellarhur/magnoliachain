@@ -1,10 +1,12 @@
+import Transaction from './Transaction.mjs';
+
 export default class TransactionPool {
     constructor() {
       this.transactions = [];
     }
   
     addTransaction(transaction) {
-      if (!transaction.validateTransaction(transaction)) {
+      if (!Transaction.validateTransaction(transaction)) {
         throw new Error('Ogiltig transaktion');
       }
   
@@ -21,13 +23,32 @@ export default class TransactionPool {
       }
     }
   
+    addRewardTransaction(minerAddress, reward) {
+      const rewardTransaction = Transaction.rewardTransaction({ 
+        minerAddress, 
+        reward 
+      });
+      this.transactions.push(rewardTransaction);
+    }
+  
     clear() {
       this.transactions = [];
     }
   
     validTransactions() {
       return this.transactions.filter(transaction =>
-        transaction.validateTransaction(transaction)
+        Transaction.validateTransaction(transaction)
+      );
+    }
+
+    getTransactionsForBlock() {
+      const validTransactions = this.validTransactions();
+      return validTransactions;
+    }
+
+    removeTransactionsForBlock(transactions) {
+      this.transactions = this.transactions.filter(
+        transaction => !transactions.includes(transaction)
       );
     }
   } 

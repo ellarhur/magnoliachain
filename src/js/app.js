@@ -138,3 +138,12 @@ document.getElementById('mine-button').addEventListener('click', async () => {
         console.error('Mining failed:', error);
     }
 }); 
+
+// Registrera
+fetch('/api/auth/register', { method: 'POST', body: JSON.stringify({ ... }), headers: { 'Content-Type': 'application/json' } })
+
+// Logga in
+fetch('/api/auth/login', { method: 'POST', body: JSON.stringify({ ... }), headers: { 'Content-Type': 'application/json' } })
+
+// Skapa transaktion (med token)
+fetch('/api/transaction', { method: 'POST', body: JSON.stringify({ ... }), headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token } })

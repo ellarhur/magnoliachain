@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnolia Chain</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Magnolia Chain</div>
+        <div class="nav-links">
+            <button id="loginBtn" class="nav-btn">Logga in</button>
+            <button id="registerBtn" class="nav-btn">Registrera</button>
+            <button id="logoutBtn" class="nav-btn hidden">Logga ut</button>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Auth Forms -->
+        <div id="authForms" class="section">
+            <div id="loginForm" class="form-container">
+                <h2>Logga in</h2>
+                <form id="login">
+                    <input type="email" placeholder="E-post" required>
+                    <input type="password" placeholder="Lösenord" required>
+                    <button type="submit">Logga in</button>
+                </form>
+            </div>
+
+            <div id="registerForm" class="form-container hidden">
+                <h2>Registrera</h2>
+                <form id="register">
+                    <input type="text" placeholder="Användarnamn" required>
+                    <input type="email" placeholder="E-post" required>
+                    <input type="password" placeholder="Lösenord" required>
+                    <button type="submit">Registrera</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Blockchain Interface -->
+        <div id="blockchainInterface" class="section hidden">
+            <div class="wallet-info">
+                <h3>Din plånbok</h3>
+                <p>Adress: <span id="walletAddress"></span></p>
+                <p>Saldo: <span id="walletBalance">0</span> MGN</p>
+            </div>
+
+            <div class="transaction-form">
+                <h3>Skapa transaktion</h3>
+                <form id="transactionForm">
+                    <input type="text" id="recipientAddress" placeholder="Mottagarens adress" required>
+                    <input type="number" id="amount" placeholder="Belopp" required>
+                    <button type="submit">Skicka</button>
+                </form>
+            </div>
+
+            <div class="mining-section">
+                <h3>Mina block</h3>
+                <button id="mineBlockBtn">Mina block</button>
+            </div>
+
+            <div class="transactions-section">
+                <h3>Transaktionspool</h3>
+                <div id="transactionPool"></div>
+            </div>
+
+            <div class="blocks-section">
+                <h3>Blockkedjan</h3>
+                <div id="blockchain"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html> 
