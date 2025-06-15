@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../app.mjs" defer></script>
+    <script src="../js/navbar.mjs" defer></script>
+    <title>Somechain - The official website for the Somechain blockchain.</title>
+    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="../css/form.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="./index.html" class="header-title">The Somechain blockchain</a>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="../../index.html">Home</a></li>
+            <li><a href="./about.html">About us</a></li>
+            <li><a href="./blockchain.html">The blockchain</a></li>
+            <li><a href="./blocks.html">Find a block</a></li>
+            <li><a href="./createblock.html">Create a block</a></li>
+
+        </ul>
+    </nav>
+    <main class="block-form-container">
+        <h2>Skapa en ny transaktion i blockkedjan</h2>
+        <form id="block-form" class="block-form">
+          <div class="form-group">
+            <label for="transactionId">Transaktions-ID:</label>
+            <input type="text" id="transactionId" name="transactionId" readonly>
+            <small>Genereras automatiskt</small>
+          </div>
+
+          <div class="form-group">
+            <label for="timestamp">Tidstämpel:</label>
+            <input type="datetime-local" id="timestamp" name="timestamp" required>
+          </div>
+
+          <div class="form-group">
+            <label for="sender">Avsändare:</label>
+            <input type="text" id="sender" name="sender" required>
+          </div>
+  
+          <div class="form-group">
+            <label for="recipient">Mottagare:</label>
+            <input type="text" id="recipient" name="recipient" required>
+          </div>
+  
+          <div class="form-group">
+            <label for="amount">Belopp:</label>
+            <input type="number" id="amount" name="amount" min="0.000001" step="0.000001" required>
+          </div>
+  
+          <div class="form-group">
+            <label for="currency">Valuta:</label>
+            <select id="currency" name="currency" required>
+              <option value="SOME">SOME</option>
+              <option value="BTC">BTC</option>
+              <option value="ETH">ETH</option>
+            </select>
+          </div>
+  
+          <div class="form-group">
+            <label for="transactionType">Transaktionstyp:</label>
+            <select id="transactionType" name="transactionType" required>
+              <option value="transfer">Överföring</option>
+              <option value="contract">Smart kontrakt</option>
+              <option value="token">Token-transaktion</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="gasFee">Gas-avgift:</label>
+            <input type="number" id="gasFee" name="gasFee" min="0" step="0.000001" required>
+          </div>
+  
+          <div class="form-group">
+            <label for="message">Meddelande (valfritt):</label>
+            <textarea id="message" name="message" rows="4"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="previousHash">Föregående block-hash:</label>
+            <input type="text" id="previousHash" name="previousHash" readonly>
+            <small>Kopplas automatiskt till föregående block</small>
+          </div>
+  
+          <button type="submit" class="bigbutton">Skapa transaktion</button>
+        </form>
+      </main>
+</body>
+</html>

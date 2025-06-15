@@ -1,5 +1,5 @@
 import { createHash } from '../../utilities/hash.mjs';
-import { REWARD_INPUT } from '../../utilities/config.mjs';
+import { REWARD_INPUT, MINING_REWARD } from '../../utilities/config.mjs';
 
 export default class Transaction {
   constructor({ sender, recipient, amount, input, outputs }) {
@@ -10,17 +10,24 @@ export default class Transaction {
     this.outputs = outputs;
   }
 
-  static newTransaction({ sender, recipient, amount }) {
+  static newTransaction({ sender, recipient, amount, blockchain }) {
     if (amount <= 0) {
       throw new Error('Beloppet måste vara större än 0');
+    }
+
+    // Beräkna avsändarens saldo
+    const balance = blockchain.getBalance(sender);
+    
+    if (amount > balance) {
+      throw new Error('Otillräckligt saldo');
     }
 
     return new Transaction({
       sender,
       recipient,
       amount,
-      input: this.createInput(sender),
-      outputs: this.createOutputs({ sender, recipient, amount })
+      input: this.createInput(sender, balance),
+      outputs: this.createOutputs({ sender, recipient, amount, balance })
     });
   }
 
@@ -34,18 +41,19 @@ export default class Transaction {
     });
   }
 
-  static createInput(sender) {
+  static createInput(sender, balance) {
     return {
       timestamp: Date.now(),
       address: sender,
-      amount: 0, 
+      amount: balance,
       signature: 'signature'
     };
   }
 
-  static createOutputs({ sender, recipient, amount }) {
+  static createOutputs({ sender, recipient, amount, balance }) {
     const outputs = [];
     outputs.push({ address: recipient, amount });
+    outputs.push({ address: sender, amount: balance - amount });
     return outputs;
   }
 

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../app.mjs" defer></script>
+    <script src="../js/navbar.mjs" defer></script>
+    <title>Somechain - Find blocks</title>
+    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="../css/searchform.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="./index.html" class="header-title">The Somechain blockchain</a>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./about.html">About us</a></li>
+            <li><a href="./blockchain.html">The blockchain</a></li>
+            <li><a href="./blocks.html">Find a block</a></li>
+            <li><a href="./createblock.html">Create a block</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="search-container">
+            <form class="search-form">
+                <input type="text" class="search-input" placeholder="Sök efter block eller transaktioner...">
+                <span class="search-icon">🔍</span>
+                <button type="submit" class="search-button">Sök</button>
+            </form>
+            <div class="search-filters">
+                <div class="filter-group">
+                    <label for="block-type" class="filter-label">Blocktyp:</label>
+                    <select id="block-type" class="filter-select">
+                        <option value="">Alla block</option>
+                        <option value="latest">Senaste blocken</option>
+                        <option value="transactions">Block med transaktioner</option>
+                        <option value="empty">Tomma block</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="time-period" class="filter-label">Tidsperiod:</label>
+                    <select id="time-period" class="filter-select">
+                        <option value="">Alla tidsperioder</option>
+                        <option value="today">Idag</option>
+                        <option value="week">Senaste veckan</option>
+                        <option value="month">Senaste månaden</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="blocks-container">
+            <!-- Här kommer blocken att visas dynamiskt -->
+        </div>
+    </main>
+</body>
+</html>
