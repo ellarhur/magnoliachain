@@ -10,10 +10,9 @@ export const getTransactionPool = (req, res) => {
   });
 };
 
-// Skapa en ny transaktion
 export const createTransaction = (req, res) => {
   const { recipient, amount } = req.body;
-  const { address } = req.user; // Hämtas från JWT
+  const { address } = req.user;
 
   try {
     const transaction = Transaction.newTransaction({

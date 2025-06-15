@@ -2,6 +2,7 @@ import { app } from './app.mjs';
 import blockchainRoutes from './src/routes/blockchain-routes.mjs';
 import networkServer from './network.mjs';
 import Blockchain from './src/models/blockchain/Blockchain.mjs';
+import { connectDb } from './src//db/magnolia.mjs'; 
 
 export const blockChain = new Blockchain();
 export const server = new networkServer({ blockchain: blockChain });
@@ -36,13 +37,17 @@ if (process.env.GENERATE_NODE_PORT === 'true') {
 const PORT = NODE_PORT || DEFAULT_PORT;
 activeNodes.add(PORT);
 
-app.listen(PORT, () => {
-  console.log(
-    `Servern är startad på adress ${PORT} och kör i läget ${process.env.NODE_ENV}`
-  );
-  displayActiveNodes();
+connectDb().then(() => {
+  app.listen(PORT, () => {
+    console.log(
+      `Servern är startad på port ${PORT} (${process.env.NODE_ENV})`
+    );
+    displayActiveNodes();
 
-  if (PORT !== DEFAULT_PORT) {
-    synchronize();
-  }
+    if (PORT !== DEFAULT_PORT) {
+      synchronize();
+    }
+  });
+}).catch(err => {
+  console.error('MongoDB-fel:', err.message);
 });
