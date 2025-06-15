@@ -1,6 +1,7 @@
 import { createHash } from '../../utilities/hash.mjs';
 import Block from './Block.mjs';
-import TransactionPool from './TransactionPool.mjs';
+import TransactionPool from '../wallet/TransactionPool.mjs';
+import 'dotenv/config';
 
 export default class Blockchain {
     constructor() {

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import User from '../models/User.mjs';
+import User from '../models/blockchain/User.mjs';
 import Wallet from '../models/wallet/Wallet.mjs';
 import AppError from '../middleware/appError.mjs';
 

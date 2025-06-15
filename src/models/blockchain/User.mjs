@@ -1,43 +1,49 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import validator from 'validator';
 
 const userSchema = new mongoose.Schema({
-  firstName: {
+  username: {
     type: String,
-    required: [true, 'Du måste ange ett förnamn'],
-  },
-  lastName: {
-    type: String,
-    required: [true, 'Du måste ange ett efternamn'],
+    required: [true, 'Användarnamn krävs'],
+    unique: true,
+    trim: true
   },
   email: {
     type: String,
-    required: [true, 'Du måste ange en epost-adress'],
+    required: [true, 'Email krävs'],
     unique: true,
-    lowercase: true,
-    validate: [validator.isEmail, 'Ange en giltig e-postadress'],
+    lowercase: true
   },
   password: {
     type: String,
-    required: [true, 'Du måste ange ett lösenord'],
-    minlength: 8,
-    select: false,
+    required: [true, 'Lösenord krävs'],
+    minlength: 6,
+    select: false
   },
+  wallet: {
+    publicKey: String,
+    privateKey: String,
+    address: String
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
+  }
+}, {
+  timestamps: true
 });
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
-
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
-userSchema.methods.checkPassword = async function (
-  passwordToCheck,
-  userPassword
-) {
-  return await bcrypt.compare(passwordToCheck, userPassword);
+userSchema.methods.correctPassword = async function(candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
 };
 
-export default mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+
+export default User; 

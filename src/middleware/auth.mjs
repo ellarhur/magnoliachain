@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import User from '../models/User.mjs';
+import User from '../models/blockchain/User.mjs';
 import AppError from './appError.mjs';
 
 export const protect = async (req, res, next) => {
