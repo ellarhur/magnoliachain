@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import connectDB from './db/magnolia.mjs';
 import authRoutes from './routes/auth-routes.mjs';
+import cors from 'cors';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -24,7 +25,10 @@ await connectDB();
 
 const app = express();
 
+// Middleware
+app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(dirname, '..')));
 
 // Routes
 app.use('/api/auth', authRoutes);

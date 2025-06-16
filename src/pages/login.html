@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../app.mjs" defer></script>
     <script src="../js/navbar.mjs" defer></script>
+    <script src="../js/auth.mjs" type="module" defer></script>
     <title>Somechain - The official website for the Somechain blockchain.</title>
     <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="../css/auth.css">
 </head>
 <body>
     <nav class="navbar">
@@ -22,7 +24,6 @@
             <li><a href="./blockchain.html">The blockchain</a></li>
             <li><a href="./blocks.html">Find a block</a></li>
             <li><a href="./createblock.html">Create a block</a></li>
-
         </ul>
     </nav>
     <main class="about-container">
@@ -39,22 +40,35 @@
           <div id="loginForm" class="auth-form hidden">
             <h3>Logga in</h3>
             <form id="login">
-              <input type="email" placeholder="E-post" required>
-              <input type="password" placeholder="Lösenord" required>
-              <button type="submit">Logga in</button>
+              <input type="email" name="email" placeholder="E-post" required>
+              <input type="password" name="password" placeholder="Lösenord" required>
+              <button type="submit" class="btn btn-primary">Logga in</button>
             </form>
           </div>
 
           <div id="registerForm" class="auth-form hidden">
             <h3>Registrera</h3>
             <form id="register">
-              <input type="text" placeholder="Användarnamn" required>
-              <input type="email" placeholder="E-post" required>
-              <input type="password" placeholder="Lösenord" required>
-              <button type="submit">Registrera</button>
+              <input type="text" name="username" placeholder="Användarnamn" required>
+              <input type="email" name="email" placeholder="E-post" required>
+              <input type="password" name="password" placeholder="Lösenord" required>
+              <button type="submit" class="btn btn-primary">Registrera</button>
             </form>
           </div>
         </div>
     </main>
+
+    <script>
+        // Visa/dölj formulär när knapparna klickas
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+        });
+
+        document.getElementById('registerBtn').addEventListener('click', () => {
+            document.getElementById('registerForm').classList.remove('hidden');
+            document.getElementById('loginForm').classList.add('hidden');
+        });
+    </script>
 </body>
 </html>
