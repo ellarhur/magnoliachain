@@ -1,5 +1,41 @@
 import { v4 as uuidv4 } from 'uuid';
 import { verifySignature } from '../../utilities/verify.mjs';
+import mongoose from 'mongoose';
+
+const transactionSchema = new mongoose.Schema({
+  id: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  outputMap: {
+    type: Map,
+    of: Number,
+    required: true
+  },
+  input: {
+    timestamp: {
+      type: Number,
+      required: true
+    },
+    amount: {
+      type: Number,
+      required: true
+    },
+    address: {
+      type: String,
+      required: true
+    },
+    signature: {
+      type: String,
+      required: true
+    }
+  }
+}, {
+  timestamps: true
+});
+
+const TransactionModel = mongoose.model('Transaction', transactionSchema);
 
 export default class Transaction {
   constructor({ sender, recipient, amount }) {
@@ -57,4 +93,24 @@ export default class Transaction {
       signature: sender.sign(outputMap),
     };
   }
+
+  toJSON() {
+    return {
+      id: this.id,
+      outputMap: this.outputMap,
+      input: this.input
+    };
+  }
+
+  static fromJSON(json) {
+    const transaction = new this({
+      sender: { publicKey: json.input.address, balance: json.input.amount },
+      recipient: Object.keys(json.outputMap).find(key => key !== json.input.address),
+      amount: json.outputMap[Object.keys(json.outputMap).find(key => key !== json.input.address)]
+    });
+    transaction.id = json.id;
+    return transaction;
+  }
 }
+
+export { TransactionModel };

@@ -1,6 +1,39 @@
 import { MINE_RATE } from '../../utilities/config.mjs';
 import { createHash } from '../../utilities/hash.mjs';
 import { GENESIS_BLOCK } from './genesis.mjs';
+import mongoose from 'mongoose';
+
+const blockSchema = new mongoose.Schema({
+  timestamp: {
+    type: Number,
+    required: true
+  },
+  hash: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  lastHash: {
+    type: String,
+    required: true
+  },
+  data: {
+    type: mongoose.Schema.Types.Mixed,
+    required: true
+  },
+  nonce: {
+    type: Number,
+    required: true
+  },
+  difficulty: {
+    type: Number,
+    required: true
+  }
+}, {
+  timestamps: true
+});
+
+const BlockModel = mongoose.model('Block', blockSchema);
 
 export default class Block {
   constructor({ timestamp, hash, lastHash, data, nonce, difficulty }) {
@@ -46,4 +79,21 @@ export default class Block {
 
     return difficulty + 1;
   }
+
+  toJSON() {
+    return {
+      timestamp: this.timestamp,
+      hash: this.hash,
+      lastHash: this.lastHash,
+      data: this.data,
+      nonce: this.nonce,
+      difficulty: this.difficulty
+    };
+  }
+
+  static fromJSON(json) {
+    return new this(json);
+  }
 }
+
+export { BlockModel };
