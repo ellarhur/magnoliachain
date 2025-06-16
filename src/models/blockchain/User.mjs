@@ -4,21 +4,24 @@ import bcrypt from 'bcryptjs';
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: [true, 'Användarnamn krävs'],
+    required: true,
     unique: true,
     trim: true
   },
   email: {
     type: String,
-    required: [true, 'Email krävs'],
+    required: true,
     unique: true,
+    trim: true,
     lowercase: true
   },
   password: {
     type: String,
-    required: [true, 'Lösenord krävs'],
-    minlength: 6,
-    select: false
+    required: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   },
   wallet: {
     publicKey: String,
@@ -36,11 +39,17 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 12);
-  next();
+  
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
-userSchema.methods.correctPassword = async function(candidatePassword) {
+userSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 

@@ -5,7 +5,7 @@ import { MINING_REWARD } from '../../utilities/config.mjs';
 import 'dotenv/config';
 import Transaction from '../wallet/Transaction.mjs';
 import { REWARD_INPUT } from '../../utilities/config.mjs';
-import User from '../models/blockchain/User.mjs';
+import User from './User.mjs';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
@@ -19,7 +19,7 @@ const blockSchema = new mongoose.Schema({
   difficulty: Number
 });
 
-const Block = mongoose.model('Block', blockSchema);
+const BlockModel = mongoose.model('Block', blockSchema);
 
 export default class Blockchain {
     constructor() {
@@ -27,7 +27,15 @@ export default class Blockchain {
         this.transactionPool = new TransactionPool();
     }
 
-    addBlock({ minerAddress }) {
+    async initialize() {
+        // Hämta alla blocks från databasen
+        const blocks = await Block.find().sort({ timestamp: 1 });
+        if (blocks.length > 0) {
+            this.chain = blocks;
+        }
+    }
+
+    async addBlock({ minerAddress }) {
         const transactions = this.transactionPool.getTransactionsForBlock();
         
         this.transactionPool.addRewardTransaction(minerAddress, MINING_REWARD);
@@ -41,10 +49,11 @@ export default class Blockchain {
         
         this.transactionPool.removeTransactionsForBlock(transactions);
 
-        await Block.create(addedBlock);
+        // Spara blocket i databasen
+        await addedBlock.save();
     }
 
-    replaceChain(chain) {
+    async replaceChain(chain) {
         if (chain.length <= this.chain.length) {
           return;
         }
@@ -52,10 +61,19 @@ export default class Blockchain {
         if (!Blockchain.isValid(chain)) {
           return;
         }
+
+        // Ta bort alla blocks från databasen
+        await Block.deleteMany({});
+        
+        // Spara den nya kedjan i databasen
+        for (const block of chain) {
+            await new Block(block).save();
+        }
+        
         this.chain = chain;
-      }
+    }
     
-      getBalance(address) {
+    getBalance(address) {
         let balance = 0;
     
         for (const block of this.chain) {
@@ -81,9 +99,9 @@ export default class Blockchain {
         }
     
         return balance;
-      }
+    }
     
-      static isValid(chain) {
+    static isValid(chain) {
         if (JSON.stringify(chain.at(0)) !== JSON.stringify(Block.genesis())) {
           return false;
         }
@@ -106,7 +124,7 @@ export default class Blockchain {
         }
     
         return true;
-      }
+    }
 
     createTransaction(sender, recipient, amount) {
         const transaction = Transaction.newTransaction({
