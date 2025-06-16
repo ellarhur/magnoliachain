@@ -35,4 +35,19 @@ export default class BlockchainRepository {
       await BlockModel.bulkWrite(operations);
     }
   }
+
+  async getFullChain() {
+    const blocks = await BlockModel.find().sort({ timestamp: 1 });
+    return blocks.map(block => {
+      const blockData = block.toObject();
+      return {
+        timestamp: blockData.timestamp,
+        hash: blockData.hash,
+        lastHash: blockData.lastHash,
+        data: blockData.data,
+        nonce: blockData.nonce,
+        difficulty: blockData.difficulty
+      };
+    });
+  }
 }

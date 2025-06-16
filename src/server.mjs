@@ -5,7 +5,9 @@ import networkServer from './network.mjs';
 import Blockchain from './models/blockchain/Blockchain.mjs';
 import TransactionPool from './models/wallet/TransactionPool.mjs';
 import Wallet from './models/wallet/Wallet.mjs';
+import BlockchainRepository from './repositories/blockchain-repository.mjs';
 
+const blockchainRepository = new BlockchainRepository();
 export const blockChain = new Blockchain();
 export const transactionPool = new TransactionPool();
 export const wallet = new Wallet();
@@ -23,18 +25,35 @@ app.use('/api/blocks', blockchainRoutes);
 app.use('/api/wallet', transactionRoutes);
 
 const synchronize = async () => {
-  let response = await fetch(`${ROOT_NODE}/api/blocks`);
-  if (response) {
-    const result = await response.json();
-    console.log('Replacing chain on sync with:', result.data.chain);
-    blockChain.replaceChain(result.data.chain);
-  }
+  try {
+    let response = await fetch(`${ROOT_NODE}/api/blocks`);
+    if (response) {
+      const result = await response.json();
+      if (result.success && Array.isArray(result.data)) {
+        console.log('Synkroniserar kedja med:', result.data);
+        const success = blockChain.replaceChain(result.data);
+        if (success) {
+          console.log('Kedja synkroniserad framgångsrikt');
+        } else {
+          console.error('Kedjan kunde inte synkroniseras');
+        }
+      } else {
+        console.error('Ogiltigt svar från root-noden:', result);
+      }
+    }
 
-  response = await fetch(`${ROOT_NODE}/api/wallet/transactions`);
-  if (response) {
-    const result = await response.json();
-    console.log('Replacing transactionPool map on sync with', result.data);
-    transactionPool.replaceMap(result.data);
+    response = await fetch(`${ROOT_NODE}/api/wallet/transactions`);
+    if (response) {
+      const result = await response.json();
+      if (result.success && result.data) {
+        console.log('Synkroniserar transaktionspool med:', result.data);
+        transactionPool.replaceMap(result.data);
+      } else {
+        console.error('Ogiltigt svar för transaktioner:', result);
+      }
+    }
+  } catch (error) {
+    console.error('Fel vid synkronisering:', error);
   }
 };
 
