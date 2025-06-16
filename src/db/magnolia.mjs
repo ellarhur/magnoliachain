@@ -7,7 +7,7 @@ export const connectDb = async () => {
     const conn = await mongoose.connect(process.env.MONGO_URI);
 
     if (conn) {
-      console.log(`Databasen är startad på: ${conn.connection.host}`);
+      console.log(`Databasen här: ${conn.connection.host}`);
     }
   } catch (error) {
     throw new AppError(error.message, 500);

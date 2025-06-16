@@ -1,89 +1,49 @@
-import mongoose from 'mongoose';
+import { MINE_RATE } from '../../utilities/config.mjs';
 import { createHash } from '../../utilities/hash.mjs';
-
-const blockSchema = new mongoose.Schema({
-  timestamp: {
-    type: Number,
-    required: true
-  },
-  hash: {
-    type: String,
-    required: true
-  },
-  lastHash: {
-    type: String,
-    required: true
-  },
-  data: [{
-    type: mongoose.Schema.Types.Mixed,
-    required: true
-  }],
-  nonce: {
-    type: Number,
-    required: true
-  },
-  difficulty: {
-    type: Number,
-    required: true
-  }
-});
-
-const BlockModel = mongoose.model('Block', blockSchema);
+import { GENESIS_BLOCK } from './genesis.mjs';
 
 export default class Block {
-  constructor(timestamp, data, lastHash = '') {
+  constructor({ timestamp, hash, lastHash, data, nonce, difficulty }) {
     this.timestamp = timestamp;
-    this.data = data;
+    this.hash = hash;
     this.lastHash = lastHash;
-    this.hash = this.calculateHash();
-    this.nonce = 0;
-    this.difficulty = 2;
-  }
-
-  calculateHash() {
-    return createHash(
-      this.timestamp,
-      this.data,
-      this.lastHash,
-      this.nonce,
-      this.difficulty
-    );
+    this.data = data;
+    this.nonce = nonce;
+    this.difficulty = difficulty;
   }
 
   static genesis() {
-    return new Block(0, [], '0');
+    return new this(GENESIS_BLOCK);
   }
 
   static mineBlock({ previousBlock, data }) {
-    const block = new Block(
-      Date.now(),
-      data,
-      previousBlock.hash
-    );
-
+    let timestamp, hash;
+    const lastHash = previousBlock.hash;
+    let { difficulty } = previousBlock;
     let nonce = 0;
-    while (true) {
-      block.nonce = nonce;
-      block.hash = block.calculateHash();
-      if (block.hash.startsWith('0'.repeat(block.difficulty))) {
-        break;
-      }
+
+    do {
       nonce++;
+      timestamp = Date.now();
+      difficulty = Block.adjustDifficultyLevel({
+        block: previousBlock,
+        timestamp,
+      });
+      hash = createHash(timestamp, lastHash, data, nonce, difficulty);
+    } while (hash.substring(0, difficulty) !== '0'.repeat(difficulty));
+
+    return new this({ timestamp, hash, lastHash, data, nonce, difficulty });
+  }
+
+  static adjustDifficultyLevel({ block, timestamp }) {
+    const { difficulty } = block;
+
+    if (difficulty < 1) return 1;
+
+    if (timestamp - block.timestamp > MINE_RATE) {
+      return difficulty - 1;
     }
 
-    return block;
-  }
-
-  async save() {
-    const blockDoc = new BlockModel(this);
-    return await blockDoc.save();
-  }
-
-  static async findOne(query) {
-    return await BlockModel.findOne(query);
-  }
-
-  static async find(query) {
-    return await BlockModel.find(query);
+    return difficulty + 1;
   }
 }

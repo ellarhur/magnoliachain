@@ -1,13 +1,10 @@
 import { Router } from 'express';
-import { protect } from '../middleware/auth.mjs';
 import {
   addBlock,
   listAllBlocks,
-} from '../controllers/blockchain-controller.mjs';
+} from '../controllers/blockchain-controllers.mjs';
 
 const routes = Router();
-
-routes.use(protect); // Skyddar alla blockchain-routes
 
 routes.get('/', listAllBlocks);
 routes.post('/mine', addBlock);

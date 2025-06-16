@@ -1,40 +1,44 @@
 import jwt from 'jsonwebtoken';
-import User from '../models/blockchain/User.mjs';
-import AppError from './appError.mjs';
+import User from '../models/User.mjs';
 
+// Skydda routes
 export const protect = async (req, res, next) => {
+  let token;
+
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: 'Ingen åtkomst till denna route'
+    });
+  }
+
   try {
-    // 1) Kontrollera om token finns
-    let token;
-    if (req.headers.authorization?.startsWith('Bearer')) {
-      token = req.headers.authorization.split(' ')[1];
-    }
+    // Verifiera token
+    const decoded = jwt.verify(token, 'din_hemliga_nyckel_här');
 
-    if (!token) {
-      return next(new AppError('Du är inte inloggad', 401));
-    }
-
-    // 2) Verifiera token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // 3) Kontrollera om användaren fortfarande finns
-    const user = await User.findById(decoded.id);
-    if (!user) {
-      return next(new AppError('Användaren finns inte längre', 401));
-    }
-
-    // 4) Lägg till användaren i request
-    req.user = user;
+    // Hämta användare från token
+    req.user = await User.findById(decoded.id);
     next();
-  } catch (error) {
-    next(new AppError('Du är inte inloggad', 401));
+  } catch (err) {
+    return res.status(401).json({
+      success: false,
+      message: 'Ingen åtkomst till denna route'
+    });
   }
 };
 
-export const restrictTo = (...roles) => {
+// Ge åtkomst till specifika roller
+export const authorize = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return next(new AppError('Du har inte behörighet för denna åtgärd', 403));
+      return res.status(403).json({
+        success: false,
+        message: `Användarrollen ${req.user.role} har inte åtkomst till denna route`
+      });
     }
     next();
   };

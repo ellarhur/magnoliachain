@@ -1,25 +1,21 @@
-import crypto from 'crypto';
+import { INITIAL_BALANCE } from '../../utilities/config.mjs';
+import { keyMgr } from '../../utilities/verify.mjs';
+import { createHash } from '../../utilities/hash.mjs';
+import Transaction from './Transaction.mjs';
 
 export default class Wallet {
   constructor() {
-    this.keyPair = crypto.generateKeyPairSync('rsa', {
-      modulusLength: 2048,
-      publicKeyEncoding: { type: 'spki', format: 'pem' },
-      privateKeyEncoding: { type: 'pkcs8', format: 'pem' }
-    });
-    this.publicKey = this.keyPair.publicKey;
-    this.privateKey = this.keyPair.privateKey;
-  }
-
-  getAddress() {
-    return crypto.createHash('sha256').update(this.publicKey).digest('hex');
+    this.balance = INITIAL_BALANCE;
+    this.keyPair = keyMgr.genKeyPair();
+    this.publicKey = this.keyPair.getPublic().encode('hex');
   }
 
   sign(data) {
-    return crypto.sign('sha256', Buffer.from(data), this.privateKey);
+    return this.keyPair.sign(createHash(data));
   }
 
-  verify(data, signature) {
-    return crypto.verify('sha256', Buffer.from(data), this.publicKey, signature);
+  createTransaction({ recipient, amount }) {
+    if (amount > this.balance) throw new Error('Not enough funds!');
+    return new Transaction({ sender: this, recipient, amount });
   }
-} 
+}

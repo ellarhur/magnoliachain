@@ -1,85 +1,32 @@
-import { blockChain } from '../../server.mjs';
-import { server } from '../../server.mjs';
-import Transaction from '../models/wallet/Transaction.mjs';
-import { REWARD_INPUT, MINING_REWARD } from '../../src/utilities/config.mjs';
+import { catchErrorAsync } from '../middleware/catchErrorAsync.mjs';
+import TransactionRepository from '../repositories/transaction-repository.mjs';
+import AppError from '../middleware/appError.mjs';
 
-export const getTransactionPool = (req, res) => {
-  res.status(200).json({
-    success: true,
-    data: blockChain.transactionPool.transactions
-  });
-};
+export const addTransaction = catchErrorAsync(async (req, res, next) => {
+  const transaction = await new TransactionRepository().add(req.body);
 
-export const createTransaction = (req, res) => {
-  const { recipient, amount } = req.body;
-  const { address } = req.user;
+  res
+    .status(201)
+    .json({ success: true, statusCode: 201, data: { transaction: transaction } });
+});
 
-  try {
-    const transaction = Transaction.newTransaction({
-      sender: address,
-      recipient,
-      amount
-    });
+export const findTransaction = catchErrorAsync(async (req, res, next) => {
+  const transaction = await new TransactionRepository().find(req.params.id);
 
-    blockChain.transactionPool.addTransaction(transaction);
-    server.broadcastTransactionPool();
-
-    res.status(201).json({
-      success: true,
-      message: 'Transaktion skapad',
-      data: transaction
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
+  if (!transaction) {
+    return next(new AppError(`Hittade ingen transaktion med id: ${id}`, 404));
   }
-};
 
-export const getUserTransactions = (req, res) => {
-  const { address } = req.user;
-  
-  const transactions = blockChain.chain
-    .flatMap(block => block.data)
-    .filter(transaction => 
-      transaction.input.address === address || 
-      transaction.outputs.some(output => output.address === address)
-    );
+  res
+    .status(200)
+    .json({ success: true, statusCode: 200, data: { transaction: transaction } });
+});
 
-  res.status(200).json({
-    success: true,
-    data: transactions
-  });
-};
 
-export const mineTransactions = (req, res) => {
-  const { address } = req.user;
+export const listTransactions = catchErrorAsync(async (req, res, next) => {
+  const transaction = await new TransactionRepository().list();
 
-  try {
-    const rewardTransaction = Transaction.rewardTransaction({
-      minerAddress: address,
-      reward: MINING_REWARD
-    });
-
-    blockChain.transactionPool.addTransaction(rewardTransaction);
-
-    blockChain.addBlock({ data: blockChain.transactionPool.transactions });
-
-    blockChain.transactionPool.clear();
-
-    server.broadcast();
-    server.broadcastTransactionPool();
-
-    res.status(200).json({
-      success: true,
-      message: 'Nytt block skapat',
-      data: blockChain.chain[blockChain.chain.length - 1]
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
-  }
-};
+  res
+    .status(200)
+    .json({ success: true, statusCode: 200, data: { transaction: transaction } });
+});
