@@ -5,10 +5,6 @@ import networkServer from './network.mjs';
 import Blockchain from './models/blockchain/Blockchain.mjs';
 import TransactionPool from './models/wallet/TransactionPool.mjs';
 import Wallet from './models/wallet/Wallet.mjs';
-import connectDB from './config/database.mjs';
-
-// Anslut till MongoDB
-connectDB();
 
 export const blockChain = new Blockchain();
 export const transactionPool = new TransactionPool();

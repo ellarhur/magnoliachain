@@ -1,43 +1,61 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import validator from 'validator';
+import jwt from 'jsonwebtoken';
 
 const userSchema = new mongoose.Schema({
-  firstName: {
+  username: {
     type: String,
-    required: [true, 'Please enter your first name'],
-  },
-  lastName: {
-    type: String,
-    required: [true, 'Please enter your last name'],
+    required: [true, 'Användarnamn krävs'],
+    unique: true,
+    trim: true
   },
   email: {
     type: String,
-    required: [true, 'Please enter your email'],
+    required: [true, 'Email krävs'],
     unique: true,
-    lowercase: true,
-    validate: [validator.isEmail, 'Must be a valid email adress with an @'],
   },
   password: {
     type: String,
-    required: [true, 'Please enter a password'],
-    minlength: 8,
-    select: false,
+    required: [true, 'Lösenord krävs'],
+    minlength: 6,
+    select: false
   },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
+  },
+  walletAddress: {
+    type: String,
+    unique: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
-
-  this.password = await bcrypt.hash(this.password, 12);
-  next();
+// Kryptera lösenord innan det sparas
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) {
+    next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
-userSchema.methods.checkPassword = async function (
-  passwordToCheck,
-  userPassword
-) {
-  return await bcrypt.compare(passwordToCheck, userPassword);
+// Sign JWT och returnera
+userSchema.methods.getSignedJwtToken = function() {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE
+  });
 };
 
-export default mongoose.model('User', userSchema);
+// Matcha användarens lösenord med hash
+userSchema.methods.matchPassword = async function(enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
+const User = mongoose.model('User', userSchema);
+
+export default User; 

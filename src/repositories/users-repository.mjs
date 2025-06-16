@@ -1,4 +1,4 @@
-import userModel from '../models/schemas/userModel.mjs';
+import User from '../models/blockchain/User.mjs';
 
 export default class UserRepository {
   async add(user) {

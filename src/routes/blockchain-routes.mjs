@@ -2,7 +2,7 @@ import { Router } from 'express';
 import {
   addBlock,
   listAllBlocks,
-} from '../controllers/blockchain-controllers.mjs';
+} from '../controllers/blockchain-controller.mjs';
 
 const routes = Router();
 

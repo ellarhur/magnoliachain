@@ -1,51 +1,74 @@
-import redis from 'redis';
+import PubNub from 'pubnub';
 
 const CHANNELS = {
   TEST: 'TEST',
   BLOCKCHAIN: 'MAGNOLIACHAIN',
+  TRANSACTION: 'TRANSACTION',
+};
+
+const credentials = {
+  publishKey: process.env.PUB_KEY,
+  subscribeKey: process.env.SUB_KEY,
+  secretKey: process.env.SEC_KEY,
+  userId: process.env.USER_ID,
 };
 
 export default class Network {
-  constructor({ blockchain }) {
+  constructor({ blockchain, transactionPool, wallet }) {
     this.blockchain = blockchain;
-    this.publisher = redis.createClient();
-    this.subscriber = redis.createClient();
+    this.transactionPool = transactionPool;
+    this.wallet = wallet;
 
-    // Ladda in alla kanaler...
-    this.loadChannels();
-
-    this.subscriber.on('message', (channel, message) =>
-      this.handleMessage(channel, message)
-    );
+    this.pubnub = new PubNub(credentials);
+    this.pubnub.subscribe({ channels: Object.values(CHANNELS) });
+    this.pubnub.addListener(this.handleMessage());
   }
 
-  broadcast() {
+  broadcastChain() {
     this.publish({
       channel: CHANNELS.BLOCKCHAIN,
       message: JSON.stringify(this.blockchain.chain),
     });
   }
 
+  broadcastTransaction(transaction) {
+    this.publish({
+      channel: CHANNELS.TRANSACTION,
+      message: JSON.stringify(transaction),
+    });
+  }
+
   handleMessage(channel, message) {
     console.log(`Got message ${message} on channel ${channel}`);
-    const msg = JSON.parse(message);
+    return {
+      message: (msgObject) => {
+        const { channel, message } = msgObject;
+        const msg = JSON.parse(message);
+        console.log(
+          `Meddelande har mottagits på kanal: ${channel}, meddelandet är ${message}`
+        );
 
-    if (channel === CHANNELS.BLOCKCHAIN) {
-      this.blockchain.replaceChain(msg);
-    }
+        switch (channel) {
+          case CHANNELS.BLOCKCHAIN:
+            this.blockchain.replaceChain(msg);
+            break;
+          case CHANNELS.TRANSACTION:
+            if (
+              !this.transactionPool.transactionExists({
+                address: this.wallet.publicKey,
+              })
+            ) {
+              this.transactionPool.addTransaction(msg);
+            }
+            break;
+          default:
+            return;
+        }
+      },
+    };
   }
 
   publish({ channel, message }) {
-    this.subscriber.unsubscribe(channel, () => {
-      this.publisher.publish(channel, message, () => {
-        this.subscriber.subscribe(channel);
-      });
-    });
-  }
-
-  loadChannels() {
-    Object.values(CHANNELS).forEach((channel) => {
-      this.subscriber.subscribe(channel);
-    });
+    this.pubnub.publish({ channel, message });
   }
 }

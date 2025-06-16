@@ -1,11 +1,11 @@
 import express from 'express';
 import {
   addTransaction,
-  listAllTransactions,
+  listTransactions,
 } from '../controllers/transaction-controller.mjs';
 
 const router = express.Router();
 
-router.route('/transactions').post(addTransaction).get(listAllTransactions);
+router.route('/transactions').post(addTransaction).get(listTransactions);
 
 export default router;
