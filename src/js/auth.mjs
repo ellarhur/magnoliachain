@@ -1,4 +1,4 @@
-// Hantera autentisering och navigering
+//  entisering och navigering
 const API_URL = window.location.origin + '/api';
 
 // Visa/dölj formulär
