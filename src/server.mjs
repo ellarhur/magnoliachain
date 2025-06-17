@@ -1,6 +1,7 @@
 import { app } from './app.mjs';
 import blockchainRoutes from './routes/blockchain-routes.mjs';
 import transactionRoutes from './routes/transaction-routes.mjs';
+import authRoutes from './routes/auth-routes.mjs';
 import networkServer from './network.mjs';
 import Blockchain from './models/blockchain/Blockchain.mjs';
 import TransactionPool from './models/wallet/TransactionPool.mjs';
@@ -21,8 +22,9 @@ const DEFAULT_PORT = 3000;
 const ROOT_NODE = `http://localhost:${DEFAULT_PORT}`;
 let NODE_PORT;
 
-app.use('/api/blocks', blockchainRoutes);
-app.use('/api/wallet', transactionRoutes);
+app.use('/api/v1/blocks', blockchainRoutes);
+app.use('/api/v1/wallet', transactionRoutes);
+app.use('/api/v1/auth', authRoutes);
 
 const synchronize = async () => {
   try {

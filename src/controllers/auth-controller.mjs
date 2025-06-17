@@ -1,99 +1,32 @@
 import jwt from 'jsonwebtoken';
 import { catchErrorAsync } from '../middleware/catchErrorAsync.mjs';
 import AppError from '../middleware/appError.mjs';
-import User from '../models/blockchain/User.mjs';
-import dotenv from 'dotenv';
+import UserRepository from '../repositories/users-repository.mjs';
 
-// Ladda miljövariabler
-dotenv.config();
+export const loginUser = catchErrorAsync(async (req, res, next) => {
+  const { email, password } = req.body;
 
-// Kontrollera att JWT_SECRET finns
-if (!process.env.JWT_SECRET) {
-    console.error('VARNING: JWT_SECRET är inte definierad i miljövariablerna');
-    process.exit(1);
-}
+  if (!email || !password) {
+    return next(new AppError('e-post och eller lösenord saknas', 400));
+  }
 
-export const register = catchErrorAsync(async (req, res, next) => {
-    console.log('Registreringsförsök:', { ...req.body, password: '***' });
-    
-    const { username, email, password } = req.body;
+  // Hämta användarens uppgifter...
+  const user = await new UserRepository().find(email, true);
 
-    // Kontrollera om användaren redan finns
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-        console.log('Användare finns redan:', email);
-        return next(new AppError('Användaren finns redan', 400));
-    }
+  if (!user || !(await user.checkPassword(password, user.password))) {
+    return next(new AppError('e-post och eller lösenord är felaktigt', 401));
+  }
 
-    try {
-        // Skapa ny användare
-        const user = await User.create({
-            username,
-            email,
-            password
-        });
+  // Skapa ett jwt token...
+  const token = createToken(user._id);
 
-        console.log('Användare skapad:', { id: user._id, email: user.email });
-
-        // Skapa JWT token med modellens metod
-        const token = user.getSignedJwtToken();
-
-        // Ta bort lösenord från svaret
-        user.password = undefined;
-
-        res.status(201).json({
-            success: true,
-            data: {
-                token,
-                user: {
-                    id: user._id,
-                    username: user.username,
-                    email: user.email
-                }
-            }
-        });
-    } catch (error) {
-        console.error('Fel vid användarskapande:', error);
-        return next(new AppError('Kunde inte skapa användare: ' + error.message, 500));
-    }
+  res
+    .status(200)
+    .json({ success: true, statusCode: 200, data: { token: token } });
 });
 
-export const login = catchErrorAsync(async (req, res, next) => {
-    console.log('Inloggningsförsök:', { ...req.body, password: '***' });
-    
-    const { email, password } = req.body;
-
-    // Hitta användaren och inkludera lösenordet
-    const user = await User.findOne({ email }).select('+password');
-    if (!user) {
-        console.log('Användare hittades inte:', email);
-        return next(new AppError('Felaktig e-post eller lösenord', 401));
-    }
-
-    // Kontrollera lösenord med modellens metod
-    const isMatch = await user.matchPassword(password);
-    if (!isMatch) {
-        console.log('Felaktigt lösenord för användare:', email);
-        return next(new AppError('Felaktig e-post eller lösenord', 401));
-    }
-
-    console.log('Användare inloggad:', { id: user._id, email: user.email });
-
-    // Skapa JWT token med modellens metod
-    const token = user.getSignedJwtToken();
-
-    // Ta bort lösenord från svaret
-    user.password = undefined;
-
-    res.json({
-        success: true,
-        data: {
-            token,
-            user: {
-                id: user._id,
-                username: user.username,
-                email: user.email
-            }
-        }
-    });
-});
+const createToken = (userId) => {
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES,
+  });
+};

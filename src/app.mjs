@@ -31,7 +31,7 @@ app.use(express.json());
 app.use(express.static(path.join(dirname, '..')));
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/api/v1/auth/register', authRoutes);
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toLocaleString();
