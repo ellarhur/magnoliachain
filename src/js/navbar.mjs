@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     logout.addEventListener('click', (e) => {
       e.preventDefault();
       localStorage.clear();
-      window.location.href = './index.html';
+      window.location.href = 'blockchain.html';
     });
   }
 });

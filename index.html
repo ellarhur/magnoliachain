@@ -6,8 +6,8 @@
   <title>Magnolia – Logga in</title>
   <link rel="stylesheet" href="./css/app.css" />
   <link rel="stylesheet" href="./css/auth.css" />
-  <script src="./js/navbar.mjs" defer></script>
-  <script type="module" src="./js/auth.mjs" defer></script>
+  <script src="./src/js/navbar.mjs" defer></script>
+  <script type="module" src="./src/js/auth.mjs" defer></script>
 </head>
 <body>
   <main class="auth-container">
@@ -28,14 +28,15 @@
         <button type="submit" class="btn">Logga in</button>
       </form>
 
-      <!-- Register Form -->
       <form id="registerForm" class="auth-form hidden">
         <h3>Registrera</h3>
-        <input type="text" name="username" placeholder="Användarnamn" required />
+        <input type="text" name="firstName" placeholder="Förnamn" required />
+        <input type="text" name="lastName" placeholder="Efternamn" required />
         <input type="email" name="email" placeholder="E-post" required />
         <input type="password" name="password" placeholder="Lösenord" required />
         <button type="submit" class="btn">Registrera</button>
       </form>
+      
     </section>
   </main>
 

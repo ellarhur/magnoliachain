@@ -1,4 +1,6 @@
 import PubNub from 'pubnub';
+import Block from '../src/models/Block.mjs';
+import Transaction from '../src/models/Transaction.mjs';
 
 const CHANNELS = {
   TEST: 'TEST',
@@ -14,8 +16,8 @@ export default class Network {
       uuid: 'server',
     });
     this.subscriber = new PubNub({
-      publishKey: 'DIN_PUBLISH_KEY',
-      subscribeKey: 'DIN_SUBSCRIBE_KEY',
+      publishKey: process.env.PUBNUB_PUBLISH_KEY,
+      subscribeKey: process.env.PUBNUB_SUBSCRIBE_KEY,
       uuid: 'server-subscriber',
     });
 
@@ -46,6 +48,16 @@ export default class Network {
 
     if (channel === CHANNELS.BLOCKCHAIN) {
       this.blockchain.replaceChain(msg);
+
+      msg.forEach(async (block) => {
+        await Block.create(block);
+
+        if (block.transactions && Array.isArray(block.transactions)) {
+          for (const tx of block.transactions) {
+            await Transaction.create(tx);
+          }
+        }
+      });
     }
   }
 

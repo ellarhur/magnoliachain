@@ -10,12 +10,18 @@ export const addUser = catchErrorAsync(async (req, res, next) => {
   if (!user) {
     return next(new AppError('Kunde inte skapa användare..', 400));
   }
+  
+  const token = jwt.sign(
+  { id: user._id }, 
+  process.env.JWT_SECRET, 
+  { expiresIn: '7d' }
+);
 
-  res.status(201).json({
-    success: true,
-    statusCode: 201,
-    data: { user }
-  });
+res.status(201).json({
+  success: true,
+  statusCode: 201,
+  data: { user, token }
+});
 });
 
 export const listUsers = catchErrorAsync(async (req, res, next) => {
