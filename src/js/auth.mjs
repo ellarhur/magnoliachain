@@ -1,6 +1,6 @@
 // js/auth.mjs
-const loginForm = document.getElementById('login');
-const registerForm = document.getElementById('register');
+const loginForm = document.getElementById('loginForm');
+const registerForm = document.getElementById('registerForm');
 
 const api = 'http://localhost:5050';
 
@@ -29,9 +29,11 @@ loginForm.addEventListener('submit', async (e) => {
 registerForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const form = new FormData(registerForm);
-  const email = form.get('email');
-  const username = form.get('username');
-  const password = form.get('password');
+const firstName = form.get('firstName');
+const lastName = form.get('lastName');
+const email = form.get('email');
+const password = form.get('password');
+
 
   const res = await fetch(`${api}/users`, {
     method: 'POST',
