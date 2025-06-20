@@ -1,24 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="./src/app.mjs" defer></script>
-    <script src="./src/js/navbar.mjs" defer></script>
-    <title>Magnolia - The official website
-    </title>
-    <link rel="stylesheet" href="./src/css/app.css">
-    <link rel="stylesheet" href="./src/css/cursor.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Magnolia – Logga in</title>
+  <link rel="stylesheet" href="./css/app.css" />
+  <link rel="stylesheet" href="./css/auth.css" />
+  <script src="./js/navbar.mjs" defer></script>
+  <script type="module" src="./js/auth.mjs" defer></script>
 </head>
 <body>
-    <main>
-        <div class="startpage-image-container">
-            <img src="./src/images/somechain1.jpg" alt="Somechain picture" class="startpage-image">
-            <div class="startpage-text-container">
-                <p class="startpage-text">The Magnolia blockchain.</p>
-                <a href="./src/pages/login.html" class="bigbutton">Log in to access the blockchain</a>
-            </div>
-        </div>
-    </main> 
+  <main class="auth-container">
+    <section class="auth-box">
+      <h2>Logga in till Magnolia blockchain</h2>
+      <p>⛏️ Bli en del av nätverket – skapa, verifiera och minea block!</p>
+
+      <div class="auth-buttons">
+        <button id="loginBtn" class="btn">Logga in</button>
+        <button id="registerBtn" class="btn btn-secondary">Registrera</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="auth-form hidden">
+        <h3>Logga in</h3>
+        <input type="email" name="email" placeholder="E-post" required />
+        <input type="password" name="password" placeholder="Lösenord" required />
+        <button type="submit" class="btn">Logga in</button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" class="auth-form hidden">
+        <h3>Registrera</h3>
+        <input type="text" name="username" placeholder="Användarnamn" required />
+        <input type="email" name="email" placeholder="E-post" required />
+        <input type="password" name="password" placeholder="Lösenord" required />
+        <button type="submit" class="btn">Registrera</button>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      document.getElementById('loginForm').classList.remove('hidden');
+      document.getElementById('registerForm').classList.add('hidden');
+    });
+
+    document.getElementById('registerBtn').addEventListener('click', () => {
+      document.getElementById('registerForm').classList.remove('hidden');
+      document.getElementById('loginForm').classList.add('hidden');
+    });
+  </script>
 </body>
 </html>

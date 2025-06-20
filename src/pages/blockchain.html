@@ -1,74 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../app.mjs" defer></script>
-    <script src="../js/navbar.mjs" defer></script>
-    <script src="../js/auth.mjs" type="module" defer></script>
-    <script src="../js/blockchain.mjs" type="module" defer></script>
-    <title>Somechain - Blockchain Dashboard</title>
-    <link rel="stylesheet" href="../css/app.css">
-    <link rel="stylesheet" href="../css/blockchain.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Magnolia Blockchain</title>
+  <script src="./js/blockchain.mjs" type="module" defer></script>
+  <link rel="stylesheet" href="./css/app.css" />
 </head>
+
 <body>
-    <nav class="navbar">
-        <a href="./index.html" class="header-title">The Somechain blockchain</a>
-        <div class="hamburger">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-        <ul class="nav-menu">
-            <li><a href="../../index.html">Home</a></li>
-            <li><a href="./about.html">About us</a></li>
-            <li><a href="./blockchain.html">The blockchain</a></li>
-            <li><a href="./blocks.html">Find a block</a></li>
-            <li><a href="./createblock.html">Create a block</a></li>
-        </ul>
-    </nav>
+  <nav>
+    <a href="miner.html">⛏️ Mine block</a>
+    <a href="index.html" onclick="localStorage.clear()">🚪 Logga ut</a>
+  </nav>
 
-    <main class="blockchain-container">
-        <div class="dashboard">
-            <div class="wallet-section">
-                <h2>Din Plånbok</h2>
-                <div class="wallet-info">
-                    <p>Adress: <span id="walletAddress">-</span></p>
-                    <p>Saldo: <span id="walletBalance">0</span> MGN</p>
-                </div>
-            </div>
+  <main>
+    <h1>Blockkedjan</h1>
+    <div>
+      <input type="text" id="searchInput" placeholder="Sök blockhash...">
+      <button id="searchBtn">Sök</button>
+    </div>
 
-            <div class="mining-section">
-                <h2>Mining</h2>
-                <button id="mineButton" class="btn btn-primary">Starta Mining</button>
-                <div id="miningStatus" class="mining-status"></div>
-            </div>
-
-            <div class="transaction-section">
-                <h2>Skapa Transaktion</h2>
-                <form id="transactionForm">
-                    <input type="text" id="recipientAddress" placeholder="Mottagarens adress" required>
-                    <input type="number" id="amount" placeholder="Belopp (MGN)" required>
-                    <button type="submit" class="btn btn-primary">Skicka</button>
-                </form>
-            </div>
-        </div>
-
-        <div class="blockchain-section">
-            <h2>Blockchain</h2>
-            <div id="blockchain" class="blockchain-list">
-                <!-- Blocks kommer att visas här dynamiskt -->
-            </div>
-        </div>
-    </main>
-
-    <script type="module">
-        import { checkAuth } from '../js/auth.mjs';
-        
-        // Kontrollera autentisering när sidan laddas
-        if (!checkAuth()) {
-            console.log('Användaren är inte inloggad');
-        }
-    </script>
+    <section id="blocks"></section>
+    <h2>Alla transaktioner</h2>
+    <section id="transactions"></section>
+  </main>
 </body>
 </html>

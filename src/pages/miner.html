@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Magnolia - Miner</title>
+  <script src="./js/miner.mjs" type="module" defer></script>
+  <link rel="stylesheet" href="./css/app.css" />
+</head>
+<body>
+  <nav>
+    <a href="blockchain.html">📜 Se kedjan</a>
+    <a href="index.html" onclick="localStorage.clear()">🚪 Logga ut</a>
+  </nav>
+
+  <main>
+    <h1>Skapa Transaktion</h1>
+    <form id="transactionForm">
+      <input type="text" name="recipient" placeholder="Mottagaradress" required>
+      <input type="number" name="amount" placeholder="Belopp" required>
+      <button type="submit">Skicka</button>
+    </form>
+
+    <h2>Minea Block</h2>
+    <button id="mineBtn">⛏️ Mine</button>
+  </main>
+</body>
+</html>

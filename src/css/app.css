@@ -1,319 +1,188 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* css/app.css */
 body {
-    font-family: "Marcellus", serif;
-    font-weight: 400;
-    font-size:1.9rem;
-    font-style: normal;
-        line-height: 1.6;
-    color: #000;
-    background: #ff5493;
-    background: linear-gradient(90deg,rgba(255, 84, 147, 1) 0%, rgba(161, 67, 105, 1) 26%, rgba(168, 62, 138, 1) 58%, rgba(194, 0, 55, 1) 100%);
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #fefefe;
 }
 
-.main-content {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2rem;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-
+.navbar {
+  background-color: #1f2937;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.frontpageimage {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin-left: 1rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
 }
 
-.frontpageimage img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.navbar a:hover {
+  color: #d1d5db;
 }
 
-.main-content h1 {
-    font-size: 3.5rem;
-    margin-bottom: 1.5rem;
-    color: #000;
-    font-family: "New Tegomin", serif;
-    font-weight: 400;
-    font-style: normal;
-    font-size:1.9rem;
+.navbar .logo {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #fbbf24;
 }
 
-.main-content p {
-    font-size: 1.5rem;
-    max-width: 800px;
-    margin: 0 auto;
-    color: white;
-    font-family: "New Tegomin", serif;
-    font-weight: 400;
-    font-style: normal;
-    font-size:1.9rem;
+main {
+  padding: 2rem;
 }
 
-a:active {
-    text-decoration:none;
-    font-style:normal;
-    color: #000;
-
+/* css/auth.css */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  background: linear-gradient(to bottom, #f3f4f6, #e5e7eb);
 }
 
-a:visited {
-    text-decoration:none;
-    color: #000;
-    font-style:normal;
-
+.auth-box {
+  background-color: white;
+  padding: 3rem 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
 }
 
-.bigbutton:hover {
-    background-color: #fff;
-    color: #000
-    
+.auth-box h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
 }
 
-.bigbutton a {
-    text-decoration: none;
-    color: inherit;
+.auth-box p {
+  margin-bottom: 1.5rem;
+  color: #4b5563;
 }
 
-.bigbutton a:hover {
-    text-decoration: none;
-    color: inherit;
+.auth-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.bigbutton a:visited {
-    text-decoration: none;
-    color: inherit;
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.bigbutton a:active {
-    text-decoration: none;
-    color: inherit;
+.auth-form input {
+  padding: 0.75rem;
+  font-size: 1rem;
 }
 
-.landingpageimage {
-    background-image: url('/src/assets/images/gbg.jpg');
-    background-size: cover;
-    height: calc(100vh);
-    width: 100%;
-    display: flex;
-    overflow: hidden;
-    justify-content: center;
-    align-items: center;
-  }
-
-
-.header-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #023047;
-    text-decoration: none;          
-    transition: color 0.3s ease;
-    margin: 0;
-    display: flex;
-    align-items: center;
+/* Grundläggande reset och typografi */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f4f8;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
 }
 
-.header-title:hover {
-    color: #023047;                 
+nav {
+  background-color: #004d40;
+  padding: 1rem 2rem;
+  display: flex;
+  gap: 1rem;
 }
 
-.hamburger {
-    display: none;
-    cursor: pointer;
-    padding: 10px;
-    z-index: 101;
-    position: relative;
+nav a {
+  color: #e0f2f1;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
 }
 
-.hamburger span {
-    display: block;
-    width: 25px;
-    height: 3px;
-    background-color: #6c584c;
-    margin: 5px 0;
-    transition: all 0.3s ease;
-    position: relative;
+nav a:hover {
+  color: #80cbc4;
 }
 
-.hamburger.active span:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
+main {
+  max-width: 600px;
+  margin: 2rem auto;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
 }
 
-.hamburger.active span:nth-child(2) {
-    opacity: 0;
+h1, h2 {
+  color: #004d40;
+  margin-bottom: 1rem;
 }
 
-.hamburger.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -6px);
+form label {
+  display: block;
+  margin-bottom: 1rem;
+  font-weight: 600;
 }
 
-.nav-menu {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
-    align-items: center;
-    margin: 0;
-    padding: 0;
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
 }
 
-.nav-menu li a {
-    text-decoration: none;
-    color: #000;
-    font-size: 1.1rem;
-    transition: color 0.3s ease;
+input[type="text"]:focus,
+input[type="number"]:focus {
+  border-color: #004d40;
+  outline: none;
 }
 
-.nav-menu li a:hover {
-    color: #dde5b4;
+button {
+  background-color: #00796b;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-size: 1.1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
 }
 
-@media (max-width: 1024px) {
-    .hamburger {
-        display: block;
-        margin-left: auto;
-    }
-
-    .nav-menu {
-        display: none;
-        position: fixed;
-        top: 80px;
-        left: 0;
-        width: 100%;
-        height: calc(100vh - 80px);
-        background-color: rgba(255, 255, 255, 0.95);
-        flex-direction: column;
-        padding: 2rem;
-        gap: 1.5rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        z-index: 100;
-    }
-
-    .nav-menu.active {
-        display: flex;
-    }
-
-    .nav-menu li {
-        width: 100%;
-        text-align: center;
-    }
-
-    .nav-menu li a {
-        display: block;
-        padding: 1rem;
-        font-size: 1.2rem;
-    }
-
-    .nav-menu li a:hover {
-        background-color: #f0ead2;
-        border-radius: 4px;
-    }
+button:hover {
+  background-color: #004d40;
 }
 
-.logo-image {
-    height: 100px;
-    width: auto;
-    object-fit: contain;
+hr {
+  margin: 2rem 0;
+  border: none;
+  border-top: 1px solid #ddd;
 }
 
-.startpage-image-container {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
+#message {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 5px;
+  font-weight: 600;
 }
 
-.startpage-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity:0.8;
+#message.error {
+  background-color: #ffebee;
+  color: #c62828;
 }
 
-.startpage-text-container {
-    position: absolute;
-    top: 50%;
-    left:50%;
-    transform: translate(-50%, -50%);
-    padding: 2rem;
-    border-radius: 8px;
-    text-align: center;
-    width: 80%;
-    max-width: 800px;
-}
-
-.startpage-text {
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    font-size: 4.0rem;
-    text-align: center;
-    margin-bottom: 1.5rem;
-    letter-spacing: 0.3rem;
-    font-family: "New Tegomin", serif;
-}
-
-.startpage-text-container .bigbutton {
-    margin-top: 2rem;
-    font-size: 1.2rem;
-    padding: 1rem 2rem;
-    text-decoration:none;
-    background-color: #000;
-    color:#fff;
-}
-
-.startpage-text-container .bigbutton:hover{
-    margin-top: 2rem;
-    font-size: 1.2rem;
-    padding: 1rem 2rem;
-    text-decoration:none;
-    background-color: #fff;
-    color:#000;
-}
-
-.text-container{
-    display: flex;
-    flex-direction:column;
-    align-items:left;
-    text-align:left;
-    padding:50px;
-    font-size:1.3rem;
-    letter-spacing: 0.1rem;
-    font-family: "New Tegomin", serif;
-    width:50%;
-}
-
-h2{
-    color: #000;
-    font-family: "New Tegomin", serif;
-    font-size:2.0rem;
-    letter-spacing: 0.1rem;
-    font-family: "New Tegomin", serif;
-}
-
-.about-container {
-    margin-top:100px;
-    display: flex;
-    padding: 2rem;
-    gap: 2rem;
-    min-height: calc(100vh - 80px);
+#message.success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
 }

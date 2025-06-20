@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import connectDB from './db/magnolia.mjs';
-import authRoutes from './routes/auth-routes.mjs';
+import authRoutes from './routes/authRoutes.mjs';
 import cors from 'cors';
 
 const filename = fileURLToPath(import.meta.url);

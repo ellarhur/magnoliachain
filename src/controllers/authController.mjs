@@ -1,23 +1,21 @@
 import jwt from 'jsonwebtoken';
 import { catchErrorAsync } from '../middleware/catchErrorAsync.mjs';
 import AppError from '../middleware/appError.mjs';
-import UserRepository from '../repositories/users-repository.mjs';
+import UserRepository from '../repositories/userRepository.mjs';
 
 export const loginUser = catchErrorAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return next(new AppError('e-post och eller lösenord saknas', 400));
+    return next(new AppError('Försök logga in igen med rätt information', 400));
   }
 
-  // Hämta användarens uppgifter...
   const user = await new UserRepository().find(email, true);
 
   if (!user || !(await user.checkPassword(password, user.password))) {
-    return next(new AppError('e-post och eller lösenord är felaktigt', 401));
+    return next(new AppError('Försök logga in igen med rätt information', 401));
   }
 
-  // Skapa ett jwt token...
   const token = createToken(user._id);
 
   res

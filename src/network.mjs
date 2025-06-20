@@ -3,72 +3,66 @@ import PubNub from 'pubnub';
 const CHANNELS = {
   TEST: 'TEST',
   BLOCKCHAIN: 'MAGNOLIACHAIN',
-  TRANSACTION: 'TRANSACTION',
-};
-
-const credentials = {
-  publishKey: process.env.PUB_KEY,
-  subscribeKey: process.env.SUB_KEY,
-  secretKey: process.env.SEC_KEY,
-  userId: process.env.USER_ID,
 };
 
 export default class Network {
-  constructor({ blockchain, transactionPool, wallet }) {
+  constructor({ blockchain }) {
     this.blockchain = blockchain;
-    this.transactionPool = transactionPool;
-    this.wallet = wallet;
+    this.publisher = new PubNub({
+      publishKey: process.env.PUBNUB_PUBLISH_KEY,
+      subscribeKey: process.env.PUBNUB_SUBSCRIBE_KEY,
+      uuid: 'server',
+    });
+    this.subscriber = new PubNub({
+      publishKey: 'DIN_PUBLISH_KEY',
+      subscribeKey: 'DIN_SUBSCRIBE_KEY',
+      uuid: 'server-subscriber',
+    });
 
-    this.pubnub = new PubNub(credentials);
-    this.pubnub.subscribe({ channels: Object.values(CHANNELS) });
-    this.pubnub.addListener(this.handleMessage());
-  }
+    this.loadChannels();
 
-  broadcastChain() {
-    this.publish({
-      channel: CHANNELS.BLOCKCHAIN,
-      message: JSON.stringify(this.blockchain.chain),
+    this.subscriber.addListener({
+      message: (messageEvent) => {
+        const { channel, message } = messageEvent;
+        this.handleMessage(channel, JSON.stringify(message));
+      },
+    });
+
+    this.subscriber.subscribe({
+      channels: Object.values(CHANNELS),
     });
   }
 
-  broadcastTransaction(transaction) {
+  broadcast() {
     this.publish({
-      channel: CHANNELS.TRANSACTION,
-      message: JSON.stringify(transaction),
+      channel: CHANNELS.BLOCKCHAIN,
+      message: this.blockchain.chain,
     });
   }
 
   handleMessage(channel, message) {
     console.log(`Got message ${message} on channel ${channel}`);
-    return {
-      message: (msgObject) => {
-        const { channel, message } = msgObject;
-        const msg = JSON.parse(message);
-        console.log(
-          `Meddelande har mottagits på kanal: ${channel}, meddelandet är ${message}`
-        );
+    const msg = JSON.parse(message);
 
-        switch (channel) {
-          case CHANNELS.BLOCKCHAIN:
-            this.blockchain.replaceChain(msg);
-            break;
-          case CHANNELS.TRANSACTION:
-            if (
-              !this.transactionPool.transactionExists({
-                address: this.wallet.publicKey,
-              })
-            ) {
-              this.transactionPool.addTransaction(msg);
-            }
-            break;
-          default:
-            return;
-        }
-      },
-    };
+    if (channel === CHANNELS.BLOCKCHAIN) {
+      this.blockchain.replaceChain(msg);
+    }
   }
 
   publish({ channel, message }) {
-    this.pubnub.publish({ channel, message });
+    this.publisher.publish(
+      {
+        channel,
+        message,
+      },
+      (status, response) => {
+        if (status.error) {
+          console.error('PubNub publish error:', status);
+        }
+      }
+    );
+  }
+
+  loadChannels() {
   }
 }
