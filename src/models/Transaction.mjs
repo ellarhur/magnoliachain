@@ -3,12 +3,13 @@ import { verifySignature } from '../utils/verify.mjs';
 import { MINING_REWARD, REWARD_ADDRESS } from '../utils/config.mjs';
 
 export default class Transaction {
-  constructor({ sender, recipient, amount, input, outputMap }) {
+  constructor({ senderWallet, recipient, amount, input, outputMap }) {
     this.id = uuidv4().replaceAll('-', '');
     this.outputMap =
-      outputMap || this.createOutputMap({ sender, recipient, amount });
+      outputMap ||
+      this.createOutputMap({ senderWallet, recipient, amount });
     this.input =
-      input || this.createInput({ sender, outputMap: this.outputMap });
+      input || this.createInput({ senderWallet, outputMap: this.outputMap });
   }
 
   static validate(transaction) {
@@ -29,16 +30,16 @@ export default class Transaction {
     return true;
   }
 
-  static transactionReward({ miner }) {
+  static rewardTransaction({ minerWallet }) {
     return new this({
       input: REWARD_ADDRESS,
-      outputMap: { [miner.publicKey]: MINING_REWARD },
+      outputMap: { [minerWallet.publicKey]: MINING_REWARD },
     });
   }
 
-  update({ sender, recipient, amount }) {
-    if (amount > this.outputMap[sender.publicKey])
-      throw new Error('Not enough funds!');
+  update({ senderWallet, recipient, amount }) {
+    if (amount > this.outputMap[senderWallet.publicKey])
+      throw new Error('Amount exceeds balance');
 
     if (!this.outputMap[recipient]) {
       this.outputMap[recipient] = amount;
@@ -46,26 +47,26 @@ export default class Transaction {
       this.outputMap[recipient] = this.outputMap[recipient] + amount;
     }
 
-    this.outputMap[sender.publicKey] =
-      this.outputMap[sender.publicKey] - amount;
+    this.outputMap[senderWallet.publicKey] =
+      this.outputMap[senderWallet.publicKey] - amount;
 
-    this.input = this.createInput({ sender, outputMap: this.outputMap });
+    this.input = this.createInput({ senderWallet, outputMap: this.outputMap });
   }
 
-  createOutputMap({ sender, recipient, amount }) {
+  createOutputMap({ senderWallet, recipient, amount }) {
     const map = {};
 
     map[recipient] = amount;
-    map[sender.publicKey] = sender.balance - amount;
+    map[senderWallet.publicKey] = senderWallet.balance - amount;
     return map;
   }
 
-  createInput({ sender, outputMap }) {
+  createInput({ senderWallet, outputMap }) {
     return {
       timestamp: Date.now(),
-      amount: sender.balance,
-      address: sender.publicKey,
-      signature: sender.sign(outputMap),
+      amount: senderWallet.balance,
+      address: senderWallet.publicKey,
+      signature: senderWallet.sign(outputMap),
     };
   }
 }

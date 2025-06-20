@@ -1,40 +1,13 @@
-import { ec } from 'elliptic';
 import { INITIAL_BALANCE } from '../utils/config.mjs';
-import { verify } from '../utils/verify.mjs';
 import { createHash } from '../utils/hash.mjs';
 import Transaction from './Transaction.mjs';
-
-const keyManager = new ec('secp256k1');
+import { keyManager } from '../utils/keyManager.mjs';
 
 export default class Wallet {
   constructor() {
     this.balance = INITIAL_BALANCE;
     this.keyPair = keyManager.genKeyPair();
     this.publicKey = this.keyPair.getPublic().encode('hex');
-  }
-
-  static calculateBalance({ chain, address }) {
-    let total = 0,
-      hasMadeTransaction = false;
-
-    for (let i = chain.length - 1; i > 0; i--) {
-      const block = chain[i];
-
-      for (let transaction of block.data) {
-        if (transaction.input.address === address) {
-          hasMadeTransaction = true;
-        }
-
-        const amount = transaction.outputMap[address];
-
-        if (amount) {
-          total += amount;
-        }
-      }
-
-      if (hasMadeTransaction) break;
-    }
-    return hasMadeTransaction ? total : INITIAL_BALANCE + total;
   }
 
   sign(data) {
@@ -49,7 +22,39 @@ export default class Wallet {
       });
     }
 
-    if (amount > this.balance) throw new Error('Not enough funds!');
-    return new Transaction({ sender: this, recipient, amount });
+    if (amount > this.balance) {
+      throw new Error('Amount exceeds balance');
+    }
+
+    return new Transaction({ senderWallet: this, recipient, amount });
+  }
+
+  static calculateBalance({ chain, address }) {
+    let hasConductedTransaction = false;
+    let outputsTotal = 0;
+
+    for (let i = chain.length - 1; i > 0; i--) {
+      const block = chain[i];
+
+      for (let transaction of block.data) {
+        if (transaction.input.address === address) {
+          hasConductedTransaction = true;
+        }
+
+        const addressOutput = transaction.outputMap[address];
+
+        if (addressOutput) {
+          outputsTotal = outputsTotal + addressOutput;
+        }
+      }
+
+      if (hasConductedTransaction) {
+        break;
+      }
+    }
+
+    return hasConductedTransaction
+      ? outputsTotal
+      : INITIAL_BALANCE + outputsTotal;
   }
 }

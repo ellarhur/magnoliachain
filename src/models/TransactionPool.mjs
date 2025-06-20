@@ -41,4 +41,14 @@ export default class TransactionPool {
       Transaction.validate(transaction)
     );
   }
+
+  // Alias för kompatibilitet med Miner.mjs
+  validTransactions() {
+    return this.validateTransactions();
+  }
+
+  // Alias för kompatibilitet med Miner.mjs  
+  clear() {
+    this.clearTransactions();
+  }
 }
