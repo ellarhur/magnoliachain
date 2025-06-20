@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import connectDB from './db/magnolia.mjs';
 import cors from 'cors';
+import errorHandler from './middleware/errorHandler.mjs';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -33,5 +34,8 @@ app.use((req, res, next) => {
   const token = req.headers.authorization;
   next();
 });
+
+// Error handling middleware (måste vara sist)
+app.use(errorHandler);
 
 export { app };

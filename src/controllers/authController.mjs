@@ -25,6 +25,6 @@ export const loginUser = catchErrorAsync(async (req, res, next) => {
 
 const createToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES,
+    expiresIn: process.env.JWT_EXPIRES || '7d',
   });
 };

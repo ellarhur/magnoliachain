@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
   nav.innerHTML = `
     <a href="./index.html" class="logo">🌸 Magnolia</a>
     <div class="nav-links">
-      <a href="./blockchain.html">📜 Blockkedja</a>
-      <a href="./miner.html">⛏️ Mine</a>
-      <a href="./index.html" id="logout">🚪 Logga ut</a>
+      <a href="./src/pages/blockchain.html">📜 Blockkedja</a>
+      <a href="./src/pages/createtransaction.html">⛏️ Mine</a>
+      <a href="./../../index.html" id="logout">🚪 Logga ut</a>
     </div>
   `;
 

@@ -8,8 +8,9 @@ const CHANNELS = {
 };
 
 export default class Network {
-  constructor({ blockchain }) {
+  constructor({ blockchain, transactionPool }) {
     this.blockchain = blockchain;
+    this.transactionPool = transactionPool;
     this.publisher = new PubNub({
       publishKey: process.env.PUBNUB_PUBLISH_KEY,
       subscribeKey: process.env.PUBNUB_SUBSCRIBE_KEY,
@@ -32,6 +33,13 @@ export default class Network {
 
     this.subscriber.subscribe({
       channels: Object.values(CHANNELS),
+    });
+  }
+
+  broadcastTransaction(transaction) {
+    this.publish({
+      channel: 'TRANSACTION',
+      message: transaction,
     });
   }
 
@@ -58,6 +66,8 @@ export default class Network {
           }
         }
       });
+    } else if (channel === 'TRANSACTION') {
+      this.transactionPool.addTransaction(msg);
     }
   }
 

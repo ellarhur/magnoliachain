@@ -9,18 +9,20 @@ export default class Miner {
   }
 
   mineTransactions() {
-    let validTransactions = [];
+    const validTransactions = this.transactionPool.validTransactions();
 
-    validTransactions = this.transactionPool.validateTransactions();
+    if (validTransactions.length === 0) {
+      return;
+    }
 
     validTransactions.push(
-      Transaction.transactionReward({ miner: this.wallet })
+      Transaction.rewardTransaction({ minerWallet: this.wallet })
     );
 
     this.blockchain.addBlock({ data: validTransactions });
 
-    this.server.broadcastChain();
+    this.server.broadcast();
 
-    this.transactionPool.clearTransactions();
+    this.transactionPool.clear();
   }
 }

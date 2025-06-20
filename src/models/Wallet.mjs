@@ -1,12 +1,15 @@
+import { ec } from 'elliptic';
 import { INITIAL_BALANCE } from '../utils/config.mjs';
-import { keyMgr } from '../utils/verify.mjs';
+import { verify } from '../utils/verify.mjs';
 import { createHash } from '../utils/hash.mjs';
 import Transaction from './Transaction.mjs';
+
+const keyManager = new ec('secp256k1');
 
 export default class Wallet {
   constructor() {
     this.balance = INITIAL_BALANCE;
-    this.keyPair = keyMgr.genKeyPair();
+    this.keyPair = keyManager.genKeyPair();
     this.publicKey = this.keyPair.getPublic().encode('hex');
   }
 

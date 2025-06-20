@@ -1,5 +1,4 @@
-import { blockChain } from '../server.mjs';
-import { server } from '../server.mjs';
+import { blockChain, network } from '../server.mjs';
 
 export const listAllBlocks = (req, res) => {
   res.status(200).json({ success: true, data: blockChain });
@@ -10,7 +9,7 @@ export const addBlock = (req, res) => {
 
   blockChain.addBlock({ data });
 
-  server.broadcast();
+  network.broadcast();
 
   res
     .status(201)

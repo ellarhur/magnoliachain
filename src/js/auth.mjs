@@ -12,23 +12,39 @@ loginForm.addEventListener('submit', async (e) => {
   const password = form.get('password');
 
   try {
+    console.log('Försöker logga in med:', { email });
+    console.log('Anropar URL:', `${api}/api/v1/auth/login`);
+    
     const res = await fetch(`${api}/api/v1/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
 
-    const data = await res.json();
+    console.log('Login response status:', res.status);
+    
+    const responseText = await res.text();
+    console.log('Login raw response:', responseText);
+    
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error('Login JSON parse error:', parseError);
+      alert('Servern skickade tillbaka HTML istället för JSON vid inloggning.');
+      return;
+    }
 
     if (res.ok) {
+      console.log('Inloggning lyckades!');
       localStorage.setItem('token', data.data.token);
-      window.location.href = './blockchain.html';
+      window.location.href = './src/pages/blockchain.html';
     } else {
       alert('Inloggning misslyckades: ' + (data.message || 'Fel användarnamn eller lösenord'));
     }
   } catch (error) {
     console.error('Login error:', error);
-    alert('Något gick fel vid inloggning');
+    alert('Något gick fel vid inloggning: ' + error.message);
   }
 });
 
