@@ -1,6 +1,6 @@
 import { checkAuth } from './auth.mjs';
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'http://localhost:5002/api';
 
 // Kontrollera autentisering
 if (!checkAuth()) {

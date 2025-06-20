@@ -3,14 +3,13 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import connectDB from './db/magnolia.mjs';
-import authRoutes from './routes/authRoutes.mjs';
 import cors from 'cors';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 global.__appdir = dirname;
 
-// Läs in .env-filen från rotmappen
+// Läs in .env-fil från rotmappen
 const envPath = path.resolve(dirname, '../.env');
 console.log('Laddar .env-fil från:', envPath);
 dotenv.config({ path: envPath });
@@ -28,10 +27,6 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(dirname, '..')));
-
-// Routes
-app.use('/api/v1/auth/register', authRoutes);
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toLocaleString();

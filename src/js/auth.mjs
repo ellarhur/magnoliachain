@@ -2,7 +2,7 @@
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
 
-const api = 'http://localhost:3000';
+const api = 'http://localhost:5002';
 
 // LOGIN
 loginForm.addEventListener('submit', async (e) => {
@@ -12,7 +12,7 @@ loginForm.addEventListener('submit', async (e) => {
   const password = form.get('password');
 
   try {
-    const res = await fetch(`${api}/auth/login`, {  // OBS! Kolla att detta är rätt endpoint i backend
+    const res = await fetch(`${api}/api/v1/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -27,6 +27,7 @@ loginForm.addEventListener('submit', async (e) => {
       alert('Inloggning misslyckades: ' + (data.message || 'Fel användarnamn eller lösenord'));
     }
   } catch (error) {
+    console.error('Login error:', error);
     alert('Något gick fel vid inloggning');
   }
 });
@@ -36,29 +37,49 @@ registerForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const form = new FormData(registerForm);
 
-  // Se till att du har inputs för dessa i ditt registerformulär
   const firstName = form.get('firstName');
   const lastName = form.get('lastName');
   const email = form.get('email');
   const password = form.get('password');
 
   try {
-    const res = await fetch(`${api}/users`, {  // POST till /users enligt din user-router
+    console.log('Skickar registreringsdata:', { firstName, lastName, email, password });
+    console.log('Anropar URL:', `${api}/api/v1/users`);
+    
+    const res = await fetch(`${api}/api/v1/users`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ firstName, lastName, email, password })
     });
 
-    const data = await res.json();
+    console.log('Response status:', res.status);
+    console.log('Response headers:', res.headers);
+    
+    const responseText = await res.text(); // Läs som text först
+    console.log('Raw response:', responseText);
+    
+    let data;
+    try {
+      data = JSON.parse(responseText); // Försök parsa som JSON
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError);
+      alert('Servern skickade tillbaka HTML istället för JSON. Kontrollera att backend-servern körs på port 5002.');
+      return;
+    }
+    
+    console.log('Parsed data:', data);
 
     if (res.ok) {
-      // Om backend skickar token efter registrering
-      localStorage.setItem('token', data.data.token);
-      window.location.href = './blockchain.html';
+      alert('Registrering lyckades! Du skickas nu vidare till blockchain-sidan.');
+      if (data.data && data.data.token) {
+        localStorage.setItem('token', data.data.token);
+      }
+      window.location.href = './src/pages/blockchain.html';
     } else {
       alert('Registrering misslyckades: ' + (data.message || 'Okänt fel'));
     }
   } catch (error) {
-    alert('Något gick fel vid registrering');
+    console.error('Registration error:', error);
+    alert('Något gick fel vid registrering: ' + error.message);
   }
 });

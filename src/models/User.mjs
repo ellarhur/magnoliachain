@@ -23,6 +23,11 @@ const User = new mongoose.Schema({
     required: [true, 'Lösenord måste anges'],
     select: false,
   },
+  walletAddress: {
+    type: String,
+    default: null,
+    sparse: true, // Tillåter flera null-värden
+  },
 });
 
 User.pre('save', async function (next) {

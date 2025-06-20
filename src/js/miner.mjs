@@ -1,4 +1,4 @@
-const api = 'http://localhost:3000';
+const api = 'http://localhost:5002';
 const token = localStorage.getItem('token');
 
 // Om ej inloggad, skicka till inloggning
