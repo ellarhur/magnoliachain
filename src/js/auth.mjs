@@ -4,6 +4,16 @@ const registerForm = document.getElementById('registerForm');
 
 const api = 'http://localhost:5002';
 
+// Exportera checkAuth-funktion
+export const checkAuth = () => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    window.location.href = '../../index.html';
+    return false;
+  }
+  return true;
+};
+
 // LOGIN
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();

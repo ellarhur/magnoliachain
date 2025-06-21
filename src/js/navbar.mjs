@@ -3,12 +3,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const nav = document.createElement('nav');
   nav.classList.add('navbar');
 
+  // Bestäm basväg baserat på var vi är
+  const currentPath = window.location.pathname;
+  const isInPagesFolder = currentPath.includes('/pages/');
+  const basePath = isInPagesFolder ? '../..' : '.';
+  const pagesPath = isInPagesFolder ? '.' : './src/pages';
+
   nav.innerHTML = `
       <h3>Magnolia Chain</h3>
     <div class="nav-links">
-      <a href="index.html">Hem</a>
-      <a href="blockchain.html">Blockchain</a>
-      <a href="createtransaction.html">Skapa Transaktion</a>
+      <a href="${basePath}/index.html">Logga in/Registrera dig</a>
+      <a href="${pagesPath}/blockchain.html">Blockchain</a>
+      <a href="${pagesPath}/createtransaction.html">Skapa Transaktion</a>
+      <button id="logoutBtn" class="btn">Logga ut</button>
     </div>
   `;
 
@@ -19,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     logout.addEventListener('click', (e) => {
       e.preventDefault();
       localStorage.clear();
-      window.location.href = './index.html';
+      window.location.href = `${basePath}/index.html`;
     });
   }
 });

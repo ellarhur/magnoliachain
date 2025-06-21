@@ -1,27 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Magnolia Blockchain</title>
-  <script src="./js/blockchain.mjs" type="module" defer></script>
+  <script src="../js/blockchain.mjs" type="module" defer></script>
   <script type="module" src="../js/navbar.mjs" defer></script>
-
   <link rel="stylesheet" href="../css/app.css" />
 </head>
 
 <body>
-
   <main>
-    <h1>Blockkedjan</h1>
-    <div>
-      <input type="text" id="searchInput" placeholder="Sök blockhash...">
-      <button id="searchBtn">Sök</button>
-    </div>
+    <h1>Magnolia Blockchain Dashboard</h1>
 
-    <section id="blocks"></section>
-    <h2>Alla transaktioner</h2>
-    <section id="transactions"></section>
+    <section class="blockchain-section">
+      <h2>Blockkedjan</h2>
+      <div id="blockchain">Laddar blockkedja...</div>
+    </section>
   </main>
 </body>
 </html>

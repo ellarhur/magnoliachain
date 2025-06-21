@@ -8,10 +8,11 @@ export default class Miner {
     this.server = server;
   }
 
-  mineTransactions() {
+  async mineTransactions() {
     const validTransactions = this.transactionPool.validTransactions();
 
     if (validTransactions.length === 0) {
+      console.log('No valid transactions to mine');
       return;
     }
 
@@ -19,7 +20,7 @@ export default class Miner {
       Transaction.rewardTransaction({ minerWallet: this.wallet })
     );
 
-    this.blockchain.addBlock({ data: validTransactions });
+    await this.blockchain.addBlock({ data: validTransactions });
 
     this.server.broadcast();
 

@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import validator from 'validator';
+import { INITIAL_BALANCE } from '../utils/config.mjs';
 
 const User = new mongoose.Schema({
   firstName: {
@@ -27,6 +28,15 @@ const User = new mongoose.Schema({
     type: String,
     default: null,
     sparse: true, // Tillåter flera null-värden
+  },
+  walletBalance: {
+    type: Number,
+    default: INITIAL_BALANCE,
+  },
+  walletPrivateKey: {
+    type: String,
+    default: null,
+    select: false, // Dölj privat nyckel från vanliga queries
   },
 });
 

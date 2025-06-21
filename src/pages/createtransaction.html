@@ -11,6 +11,14 @@
   <main>
     <h1>Skapa ny transaktion</h1>
 
+        
+    <section class="wallet-info">
+      <h2>Din Plånbok</h2>
+      <p>Adress: <span id="walletAddress">Laddar...</span></p>
+      <p>Saldo: <span id="walletBalance">Laddar...</span> tokens</p>
+    </section>
+
+
     <form id="transactionForm">
       <label>
         Mottagarens adress:
@@ -34,13 +42,20 @@
   </main>
 
   <script type="module">
+    import { updateWalletInfo } from '../js/wallet.mjs';
+
     const form = document.getElementById('transactionForm');
     const recipientInput = document.getElementById('recipient');
     const amountInput = document.getElementById('amount');
     const mineBtn = document.getElementById('mineBlockBtn');
     const messageDiv = document.getElementById('message');
 
-    const API_URL = 'http://localhost:5050';  // din backend URL och port
+    const API_URL = 'http://localhost:5002';
+
+    // Ladda wallet-info när sidan laddas
+    document.addEventListener('DOMContentLoaded', () => {
+      updateWalletInfo();
+    });
 
     // Funktion för att skapa en transaktion
     const createTransaction = async (sender, recipient, amount) => {
@@ -51,18 +66,20 @@
       }
 
       try {
-        const res = await fetch(`${API_URL}/transactions`, {
+        const res = await fetch(`${API_URL}/api/v1/transactions`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ sender, recipient, amount }),
+          body: JSON.stringify({ recipient, amount }),
         });
         const data = await res.json();
 
         if (res.ok) {
           messageDiv.textContent = 'Transaktion skapad!';
+          // Uppdatera wallet-info efter transaktion
+          setTimeout(() => updateWalletInfo(), 1000);
         } else {
           messageDiv.textContent = `Fel: ${data.message || 'Något gick fel'}`;
         }
@@ -80,8 +97,8 @@
       }
 
       try {
-        const res = await fetch(`${API_URL}/blocks/mine`, {
-          method: 'POST',
+        const res = await fetch(`${API_URL}/api/v1/transactions/mine`, {
+          method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -90,6 +107,8 @@
 
         if (res.ok) {
           messageDiv.textContent = 'Block mined!';
+          // Uppdatera wallet-info efter mining
+          setTimeout(() => updateWalletInfo(), 1000);
         } else {
           messageDiv.textContent = `Fel: ${data.message || 'Något gick fel'}`;
         }
@@ -103,14 +122,13 @@
       e.preventDefault();
       const recipient = recipientInput.value.trim();
       const amount = parseInt(amountInput.value, 10);
-      const sender = 'din-adress-har'; // OBS! Byt till din wallets adress, eller hämta från användarens profil/token
 
       if (!recipient || isNaN(amount) || amount <= 0) {
         messageDiv.textContent = 'Fyll i giltig mottagare och belopp.';
         return;
       }
 
-      createTransaction(sender, recipient, amount);
+      createTransaction(null, recipient, amount);
 
       recipientInput.value = '';
       amountInput.value = '';

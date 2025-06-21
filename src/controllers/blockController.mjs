@@ -1,7 +1,12 @@
 import { blockChain, network } from '../server.mjs';
 
 export const listAllBlocks = (req, res) => {
-  res.status(200).json({ success: true, data: blockChain });
+  res.status(200).json({ 
+    success: true, 
+    data: { 
+      chain: blockChain.chain 
+    } 
+  });
 };
 
 export const addBlock = (req, res) => {
@@ -13,5 +18,5 @@ export const addBlock = (req, res) => {
 
   res
     .status(201)
-    .json({ success: true, message: 'Block is added', data: blockChain.chain });
+    .json({ success: true, message: 'Block is added', data: { chain: blockChain.chain } });
 };
