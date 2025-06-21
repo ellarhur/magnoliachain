@@ -4,22 +4,22 @@ document.addEventListener('DOMContentLoaded', () => {
   nav.classList.add('navbar');
 
   nav.innerHTML = `
-    <a href="./index.html" class="logo">🌸 Magnolia</a>
+      <h3>Magnolia Chain</h3>
     <div class="nav-links">
-      <a href="./src/pages/blockchain.html">📜 Blockkedja</a>
-      <a href="./src/pages/createtransaction.html">⛏️ Mine</a>
-      <a href="./" id="logout">🚪 Logga ut</a>
+      <a href="index.html">Hem</a>
+      <a href="blockchain.html">Blockchain</a>
+      <a href="createtransaction.html">Skapa Transaktion</a>
     </div>
   `;
 
   document.body.prepend(nav);
 
-  const logout = document.getElementById('logout');
+  const logout = document.getElementById('logoutBtn');
   if (logout) {
     logout.addEventListener('click', (e) => {
       e.preventDefault();
       localStorage.clear();
-      window.location.href = 'blockchain.html';
+      window.location.href = './index.html';
     });
   }
 });

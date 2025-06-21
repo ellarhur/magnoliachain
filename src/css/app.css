@@ -1,78 +1,56 @@
-/* css/app.css */
 body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: #fefefe;
-}
-
-.navbar {
-  background-color: #1f2937;
-  color: white;
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.navbar a {
-  color: white;
-  text-decoration: none;
-  margin-left: 1rem;
-  font-weight: 500;
-  transition: color 0.2s ease;
-}
-
-.navbar a:hover {
-  color: #d1d5db;
-}
-
-.navbar .logo {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: #fbbf24;
+  font-family: "Share Tech Mono", monospace;
+  font-weight: 400;
+  font-style: normal;
+  font-size:1.9rem;
+  font-style: normal;
+      line-height: 1.6;
+  color: #000;
+  background: #ff5493;
+  background: linear-gradient(90deg,rgba(255, 84, 147, 1) 0%, rgba(161, 67, 105, 1) 26%, rgba(168, 62, 138, 1) 58%, rgba(194, 0, 55, 1) 100%);
 }
 
 main {
+  max-width: 1000px;
+  margin: 2rem auto;
   padding: 2rem;
+  border-radius: 10px;
 }
 
-/* css/auth.css */
+
 .auth-container {
   display: flex;
+  margin-top:5rem;
+  margin-bottom:5rem;
   justify-content: center;
   align-items: center;
-  height: 90vh;
-  background: linear-gradient(to bottom, #f3f4f6, #e5e7eb);
+  height: 100vh;
 }
 
 .auth-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background-color: white;
   padding: 3rem 2rem;
   border-radius: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 1500px;
   text-align: center;
-}
-
-.auth-box h2 {
-  margin-bottom: 0.5rem;
-  font-size: 1.5rem;
 }
 
 .auth-box p {
   margin-bottom: 1.5rem;
-  color: #4b5563;
+  color: #4F021E;
 }
 
-.auth-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
 
 .auth-form {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -83,46 +61,40 @@ main {
   font-size: 1rem;
 }
 
-/* Grundläggande reset och typografi */
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f0f4f8;
-  color: #333;
-  margin: 0;
-  padding: 0;
-  line-height: 1.6;
-}
-
 nav {
-  background-color: #004d40;
-  padding: 1rem 2rem;
+  background-color: #4F021E;
+  font-family: "Share Tech Mono", monospace;
+  font-size:1rem;
+  padding: 2rem;
+  border-radius:10px;
   display: flex;
   gap: 1rem;
+  align-items:center;
 }
 
 nav a {
-  color: #e0f2f1;
+  color: #fff;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.3s ease;
+  border:1px solid #fff;
+  border-radius:10px;
+  padding:0.5rem;
+
 }
 
 nav a:hover {
-  color: #80cbc4;
-}
-
-main {
-  max-width: 600px;
-  margin: 2rem auto;
-  background-color: #fff;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+  color: #fd79a8;
 }
 
 h1, h2 {
-  color: #004d40;
+  color: #4F021E;
   margin-bottom: 1rem;
+}
+
+h3{
+  color:#fff;
+  font-size:1.5rem;
 }
 
 form label {
@@ -149,7 +121,7 @@ input[type="number"]:focus {
 }
 
 button {
-  background-color: #00796b;
+  background-color: #4F021E;
   color: white;
   border: none;
   padding: 0.8rem 1.5rem;
@@ -161,7 +133,7 @@ button {
 }
 
 button:hover {
-  background-color: #004d40;
+  background-color: #4F021E;
 }
 
 hr {
