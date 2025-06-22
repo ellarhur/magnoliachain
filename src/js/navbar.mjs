@@ -1,9 +1,7 @@
-// js/navbar.mjs
 document.addEventListener('DOMContentLoaded', () => {
   const nav = document.createElement('nav');
   nav.classList.add('navbar');
 
-  // Bestäm basväg baserat på var vi är
   const currentPath = window.location.pathname;
   const isInPagesFolder = currentPath.includes('/pages/');
   const basePath = isInPagesFolder ? '../..' : '.';

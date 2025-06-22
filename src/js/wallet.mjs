@@ -1,4 +1,3 @@
-// js/wallet.mjs
 const API_URL = 'http://localhost:5002/api/v1';
 
 export const updateWalletInfo = async () => {
@@ -18,7 +17,6 @@ export const updateWalletInfo = async () => {
     const data = await response.json();
     
     if (data.success) {
-      // Uppdatera wallet-element om de finns
       const walletAddress = document.getElementById('walletAddress');
       const walletBalance = document.getElementById('walletBalance');
       
@@ -37,7 +35,6 @@ export const updateWalletInfo = async () => {
   } catch (error) {
     console.error('Fel vid hämtning av wallet-information:', error);
     
-    // Visa felmeddelande i element om de finns
     const walletAddress = document.getElementById('walletAddress');
     const walletBalance = document.getElementById('walletBalance');
     

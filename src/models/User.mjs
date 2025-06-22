@@ -36,7 +36,7 @@ const User = new mongoose.Schema({
   walletPrivateKey: {
     type: String,
     default: null,
-    select: false, // Dölj privat nyckel från vanliga queries
+    select: false, 
   },
 });
 

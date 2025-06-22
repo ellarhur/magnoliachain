@@ -15,7 +15,6 @@ export default class Blockchain {
     });
     this.chain.push(addedBlock);
 
-    // Spara blocket till MongoDB
     try {
       await Block.create({
         timestamp: addedBlock.timestamp,
@@ -26,11 +25,9 @@ export default class Blockchain {
         difficulty: addedBlock.difficulty
       });
 
-      // Spara transaktioner till MongoDB
       if (Array.isArray(addedBlock.data)) {
         for (const transaction of addedBlock.data) {
           try {
-            // Extrahera recipient och amount från outputMap för vanliga transaktioner
             let recipient = null;
             let amount = null;
             
@@ -38,7 +35,6 @@ export default class Blockchain {
               const senderAddress = transaction.input.address;
               const outputKeys = Object.keys(transaction.outputMap);
               
-              // Hitta recipient (den som inte är sender)
               recipient = outputKeys.find(key => key !== senderAddress);
               amount = recipient ? transaction.outputMap[recipient] : null;
             }

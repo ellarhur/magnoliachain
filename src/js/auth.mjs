@@ -1,10 +1,8 @@
-// js/auth.mjs
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
 
 const api = 'http://localhost:5002';
 
-// Exportera checkAuth-funktion
 export const checkAuth = () => {
   const token = localStorage.getItem('token');
   if (!token) {
@@ -14,7 +12,6 @@ export const checkAuth = () => {
   return true;
 };
 
-// LOGIN
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const form = new FormData(loginForm);
@@ -58,7 +55,6 @@ loginForm.addEventListener('submit', async (e) => {
   }
 });
 
-// REGISTRERING
 registerForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const form = new FormData(registerForm);

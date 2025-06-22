@@ -16,10 +16,8 @@ const miningStatus = document.getElementById('miningStatus');
 const transactionForm = document.getElementById('transactionForm');
 const blockchainList = document.getElementById('blockchain');
 
-// Hämta token från localStorage
 const token = localStorage.getItem('token');
 
-// Formatera transaktioner för visning
 const formatTransactions = (transactions) => {
     if (!Array.isArray(transactions) || transactions.length === 0) {
         return '<p class="no-transactions">Inga transaktioner</p>';
@@ -28,7 +26,6 @@ const formatTransactions = (transactions) => {
     return transactions.map(tx => {
         console.log('Processing transaction:', tx);
         
-        // Hantera mining reward-transaktioner
         if (tx.input && tx.input.address === '#reward-address#') {
             const recipient = Object.keys(tx.outputMap)[0];
             const amount = Object.values(tx.outputMap)[0];
@@ -41,15 +38,12 @@ const formatTransactions = (transactions) => {
                 </div>
             `;
         } else {
-            // Hantera vanliga transaktioner
             const senderAddress = tx.input?.address;
             let recipient = tx.recipient;
             let amount = tx.amount;
             
-            // Om recipient/amount saknas, försök hämta från outputMap
             if (!recipient && tx.outputMap) {
                 const outputKeys = Object.keys(tx.outputMap);
-                // Recipient är den som INTE är sender
                 recipient = outputKeys.find(key => key !== senderAddress);
                 amount = recipient ? tx.outputMap[recipient] : 'N/A';
             }
@@ -67,7 +61,6 @@ const formatTransactions = (transactions) => {
     }).join('');
 };
 
-// Uppdatera blockkedjan
 const updateBlockchain = async () => {
     try {
         console.log('Hämtar blockkedja från:', `${API_URL}/blocks`);
@@ -121,7 +114,6 @@ const updateBlockchain = async () => {
     }
 };
 
-// Hantera mining
 let isMining = false;
 
 if (mineButton) {
@@ -166,7 +158,6 @@ if (mineButton) {
     });
 }
 
-// Hantera transaktioner
 if (transactionForm) {
     transactionForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -203,11 +194,9 @@ if (transactionForm) {
     });
 }
 
-// Uppdatera information vid start
 updateWalletInfo();
 updateBlockchain();
 
-// Uppdatera information regelbundet
 setInterval(() => {
     updateBlockchain();
-}, 5000); // Uppdatera var 5:e sekund 
+}, 5000);

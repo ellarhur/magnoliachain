@@ -7,10 +7,8 @@ import Wallet from '../models/Wallet.mjs';
 export const addUser = catchErrorAsync(async (req, res, next) => {
   const userRepo = new UserRepository();
   
-  // Skapa en ny wallet för användaren
   const wallet = new Wallet();
   
-  // Lägg till wallet-info till användardata
   const userData = {
     ...req.body,
     walletAddress: wallet.publicKey,
